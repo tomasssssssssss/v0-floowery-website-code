@@ -1,0 +1,243 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --primary: #160c29;
+    --primary-light: #2a1845;
+    --secondary: #59ccb1;
+    --secondary-light: #f0fbf8;
+    --text-primary: #160c29;
+    --text-secondary: #59ccb1;
+    --background-light: #f0fbf8;
+    --background-white: #ffffff;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Adjust based on your header height */
+}
+
+:root {
+  --foreground-rgb: 22, 12, 41; /* #160C29 */
+  --background-start-rgb: 240, 240, 240; /* #F0F0F0 */
+  --background-end-rgb: 240, 240, 240; /* #F0F0F0 */
+
+  /* Floowery brand colors */
+  --floowery: 255 54% 12%; /* #160C29 */
+  --floowery-light: 0 0% 94%; /* #F0F0F0 */
+  --floowery-dark: 164 51% 58%; /* #59CCB1 */
+
+  --primary: #160c29;
+  --secondary: #59ccb1;
+  --background: #f0fbf8;
+  --text: #333333;
+  --text-light: #666666;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  font-family: "Lexend", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@keyframes blob {
+  0% {
+    transform: translate(0px, 0px) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Custom styles for the Floowery website */
+.bg-gradient-floowery {
+  background: linear-gradient(to right, #160c29, #0d1f25);
+}
+
+.text-gradient-floowery {
+  background: linear-gradient(to right, #160c29, #0d1f25);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.border-gradient-floowery {
+  border-image: linear-gradient(to right, #160c29, #0d1f25) 1;
+}
+
+.gradient-bg {
+  background: linear-gradient(to bottom, var(--background), white);
+}
+
+.text-primary {
+  color: var(--primary);
+}
+
+.text-secondary {
+  color: var(--secondary);
+}
+
+.bg-primary {
+  background-color: var(--primary);
+}
+
+.bg-secondary {
+  background-color: var(--secondary);
+}
+
+.primary-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: var(--primary);
+  color: white;
+  font-weight: 500;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(22, 12, 41, 0.1);
+}
+
+.primary-btn:hover {
+  background-color: rgba(22, 12, 41, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(22, 12, 41, 0.15);
+}
+
+.secondary-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: white;
+  color: var(--primary);
+  font-weight: 500;
+  border: 1px solid var(--primary);
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.secondary-btn:hover {
+  background-color: rgba(22, 12, 41, 0.05);
+  transform: translateY(-2px);
+}
+
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card-shadow:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.section-title {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.section-title span {
+  color: var(--secondary);
+}
+
+.section-description {
+  color: #4b5563;
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  margin-bottom: 2.5rem;
+}

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --instafloower: 267 75% 65%;
+  --instafloower-light: 267 75% 95%;
+  --instafloower-dark: 267 75% 55%;
+}

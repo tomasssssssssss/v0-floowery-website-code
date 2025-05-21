@@ -1,0 +1,57 @@
+.reviews-section {
+  position: relative;
+  padding: 2rem 0;
+}
+
+.reviews-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.reviews-wrapper {
+  overflow: hidden;
+  padding: 20px 0;
+}
+
+.review-item {
+  flex: 0 0 250px;
+  margin-right: 15px;
+  height: 100%;
+}
+
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  border: none;
+  outline: none;
+}
+
+.prev-btn {
+  left: 0;
+}
+
+.next-btn {
+  right: 0;
+}
+
+@media (max-width: 768px) {
+  .reviews-container {
+    padding: 0 30px;
+  }
+
+  .slider-btn {
+    width: 30px;
+    height: 30px;
+  }
+}
