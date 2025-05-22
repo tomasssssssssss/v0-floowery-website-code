@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { Check, ChevronDown, ChevronUp, Shield, Zap, Lock, Instagram, CreditCard, BadgeCheck } from "lucide-react"
 import TopBanner from "@/components/TopBanner"
 import { Header } from "@/components/Header"
@@ -9,7 +10,6 @@ import Hero from "@/components/Hero"
 import BeforeAfterComparison from "@/components/BeforeAfterComparison"
 import BenefitsList from "@/components/BenefitsList"
 import SimpleTestimonials from "@/components/simple-testimonials"
-import { SimpleButton } from "@/components/SimpleButton"
 
 export default function Home() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
@@ -183,9 +183,12 @@ export default function Home() {
                 </li>
               </ul>
 
-              <SimpleButton href="/checkout?plan=starter-monthly&price=15" className="w-full">
+              <Link
+                href="/checkout?plan=starter-monthly&price=15"
+                className="block w-full py-3 px-4 bg-[#160C29] hover:bg-[#59CCB1] text-white font-medium rounded-lg text-center transition-colors duration-300"
+              >
                 Start Growing Now
-              </SimpleButton>
+              </Link>
 
               <div className="mt-4 bg-[#FFF8E6] p-3 rounded-lg border border-yellow-200">
                 <p className="text-center text-sm font-medium text-[#160C29]">
@@ -291,9 +294,12 @@ export default function Home() {
                   <CreditCard className="h-5 w-5 text-[#59CCB1] mr-2" />
                   <span className="text-sm font-medium text-gray-700">One-time payment</span>
                 </div>
-                <SimpleButton href="/checkout?plan=trial&price=15" className="min-w-[180px]">
+                <Link
+                  href="/checkout?plan=trial&price=15"
+                  className="px-6 py-3 bg-[#160C29] hover:bg-[#59CCB1] text-white font-medium rounded-lg text-center transition-colors duration-300 min-w-[180px]"
+                >
                   Get Started for €15
-                </SimpleButton>
+                </Link>
               </div>
             </div>
           </div>
@@ -362,10 +368,10 @@ export default function Home() {
                     ))}
                   </ul>
 
-                  <SimpleButton
+                  <Link
                     href={`/checkout?package=${plan.followers.split("–")[0]}&price=${plan.price}&billing=${billingPeriod}`}
                     className={`
-                      w-full text-sm sm:text-base
+                      block w-full py-2 sm:py-3 px-3 sm:px-4 rounded-lg text-center font-medium transition-colors text-sm sm:text-base
                       ${
                         plan.isPopular
                           ? "bg-primary hover:bg-secondary text-white"
@@ -374,7 +380,7 @@ export default function Home() {
                     `}
                   >
                     Buy Now
-                  </SimpleButton>
+                  </Link>
                 </div>
               </div>
             ))}
