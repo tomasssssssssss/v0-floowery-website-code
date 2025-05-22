@@ -40,20 +40,6 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
-
-    // Check if this is a login or signup button by looking at the button text
-    const buttonText = props.children?.toString().toLowerCase() || ""
-    if (
-      buttonText.includes("log in") ||
-      buttonText.includes("login") ||
-      buttonText.includes("sign up") ||
-      buttonText.includes("signup") ||
-      buttonText.includes("register")
-    ) {
-      return null // Hide login and signup buttons
-    }
-
-    // Render all other buttons normally
     return <Comp className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />
   },
 )
