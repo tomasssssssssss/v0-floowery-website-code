@@ -50,7 +50,7 @@ export default function TopBanner() {
   return (
     <div className="w-full bg-gradient-to-r from-[#160C29] to-[#0D1F25] text-white py-2">
       <div className="container mx-auto text-center overflow-hidden">
-        <p className="text-[10px] font-bold whitespace-nowrap">
+        <p className="text-xs font-bold whitespace-nowrap">
           ⏳ Offer ends in: {formatTimeUnit(timeLeft.hours)}h:{formatTimeUnit(timeLeft.minutes)}m:
           {formatTimeUnit(timeLeft.seconds)}s — Last 3 spots available!
         </p>

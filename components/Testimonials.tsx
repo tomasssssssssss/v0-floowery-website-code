@@ -88,7 +88,7 @@ export default function Testimonials() {
             {visibleTestimonials().map((testimonial, index) => (
               <div
                 key={testimonial.id}
-                className={`bg-white rounded-xl shadow-md p-6 flex-1 transition-all duration-500 ${
+                className={`bg-white rounded-xl shadow-md p-6 flex-1 transition-all duration-500 ease-in-out transform hover:scale-102 hover:shadow-lg ${
                   index === 0 ? "block" : index === 1 ? "hidden md:block" : "hidden lg:block"
                 }`}
               >
@@ -122,14 +122,14 @@ export default function Testimonials() {
           <div className="flex justify-center mt-8 gap-4">
             <button
               onClick={prevTestimonial}
-              className="p-2 rounded-full bg-[#160C29] text-white hover:bg-[#59CCB1] transition-colors"
+              className="p-2 rounded-full bg-[#160C29] text-white hover:bg-[#59CCB1] transition-all duration-300 ease-in-out transform hover:scale-110"
               aria-label="Previous testimonial"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             <button
               onClick={nextTestimonial}
-              className="p-2 rounded-full bg-[#160C29] text-white hover:bg-[#59CCB1] transition-colors"
+              className="p-2 rounded-full bg-[#160C29] text-white hover:bg-[#59CCB1] transition-all duration-300 ease-in-out transform hover:scale-110"
               aria-label="Next testimonial"
             >
               <ChevronRight className="w-5 h-5" />

@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect, useRef } from "react"
 import Image from "next/image"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowRight, ChevronLeft, ChevronRight, Instagram, Users, TrendingUp } from "lucide-react"
-import { scrollToElement } from "@/lib/smooth-scroll"
 
 interface Example {
   id: number
@@ -248,31 +247,6 @@ export default function BeforeAfterComparison() {
     }
   }, [])
 
-  // Filter examples based on selected category
-  const filteredExamples =
-    activeCategory === "all"
-      ? examples
-      : activeCategory === "highest-growth"
-        ? [...examples].sort((a, b) => {
-            const parseFollowers = (str: string) => {
-              if (str.includes("K")) {
-                return Number.parseFloat(str.replace("K", "")) * 1000
-              }
-              return Number.parseFloat(str.replace(/,/g, ""))
-            }
-
-            const aBeforeCount = parseFollowers(a.beforeFollowers)
-            const aAfterCount = parseFollowers(a.afterFollowers)
-            const aGrowthPercent = (aAfterCount - aBeforeCount) / aBeforeCount
-
-            const bBeforeCount = parseFollowers(b.beforeFollowers)
-            const bAfterCount = parseFollowers(b.afterFollowers)
-            const bGrowthPercent = (bAfterCount - bBeforeCount) / bBeforeCount
-
-            return bGrowthPercent - aGrowthPercent
-          })
-        : examples.filter((example) => example.category === activeCategory)
-
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -291,7 +265,7 @@ export default function BeforeAfterComparison() {
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [activeExample, filteredExamples])
+  }, [activeExample])
 
   // Detect which example is currently in view
   useEffect(() => {
@@ -322,18 +296,44 @@ export default function BeforeAfterComparison() {
   const scrollToExample = (id: number) => {
     const exampleElement = document.getElementById(`example-${id}`)
     if (exampleElement) {
-      scrollToElement(`example-${id}`, {
-        offset: 80,
-        callback: () => setActiveExample(id),
+      exampleElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
       })
+      setActiveExample(id)
     }
   }
+
+  // Filter examples based on selected category
+  const filteredExamples =
+    activeCategory === "all"
+      ? examples
+      : activeCategory === "highest-growth"
+        ? [...examples].sort((a, b) => {
+            const parseFollowers = (str: string) => {
+              if (str.includes("K")) {
+                return Number.parseFloat(str.replace("K", "")) * 1000
+              }
+              return Number.parseFloat(str.replace(/,/g, ""))
+            }
+
+            const aBeforeCount = parseFollowers(a.beforeFollowers)
+            const aAfterCount = parseFollowers(a.afterFollowers)
+            const aGrowthPercent = (aAfterCount - aBeforeCount) / aBeforeCount
+
+            const bBeforeCount = parseFollowers(b.beforeFollowers)
+            const bAfterCount = parseFollowers(b.afterFollowers)
+            const bGrowthPercent = (bAfterCount - bBeforeCount) / bBeforeCount
+
+            return bGrowthPercent - aGrowthPercent
+          })
+        : examples.filter((example) => example.category === activeCategory)
 
   return (
     <section
       id="results"
       ref={sectionRef}
-      className="py-10 px-2 sm:px-4 bg-[#F0F0F0] dark:bg-gray-900 scroll-mt-16 w-full scroll-container scroll-snap-container smooth-scroll-section"
+      className="py-10 px-2 sm:px-4 bg-[#F0F0F0] dark:bg-gray-900 scroll-mt-16 w-full scroll-container scroll-snap-container"
     >
       {/* Wider container for the entire section */}
       <div className="max-w-[1400px] w-full mx-auto">
@@ -677,7 +677,7 @@ function ExampleCard({ example }: { example: Example }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.7, ease: "easeInOut" }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className="flex justify-center w-full"
               >
                 <div className="w-full max-w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] relative transition-all duration-700">
@@ -706,7 +706,7 @@ function ExampleCard({ example }: { example: Example }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.7, ease: "easeInOut" }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 className="flex justify-center w-full"
               >
                 <div className="w-full max-w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] relative transition-all duration-700">
@@ -788,7 +788,7 @@ function ExampleCard({ example }: { example: Example }) {
 
           <button
             onClick={toggleView}
-            className="bg-[#160C29] hover:bg-[#59CCB1] text-white px-6 py-3 rounded-lg transition-colors duration-300 text-base font-medium flex items-center justify-center shadow-md hover:shadow-lg"
+            className="bg-[#160C29] hover:bg-[#59CCB1] text-white px-6 py-3 rounded-lg transition-all duration-400 ease-in-out text-base font-medium flex items-center justify-center shadow-md hover:shadow-lg transform hover:scale-105"
             aria-label={isShowingAfter ? "View before image" : "View after image"}
           >
             {isShowingAfter ? (

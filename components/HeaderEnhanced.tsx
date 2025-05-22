@@ -25,7 +25,7 @@ export default function HeaderEnhanced() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#F0F0F0] shadow-md" : "bg-[#F0F0F0]"}`}
+      className={`sticky top-0 z-50 transition-all duration-500 ease-in-out ${scrolled ? "bg-[#F0F0F0] shadow-md" : "bg-[#F0F0F0]"}`}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
@@ -46,7 +46,7 @@ export default function HeaderEnhanced() {
             <nav className="flex space-x-1">
               <Link
                 href="/"
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ease-in-out ${
                   isActive("/")
                     ? "text-[#FFFFFF] bg-[#160C29] shadow-sm"
                     : "text-[#59CCB1] hover:text-[#160C29] hover:bg-[#F0F0F0]"
@@ -56,7 +56,7 @@ export default function HeaderEnhanced() {
               </Link>
               <Link
                 href="/dashboard"
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ease-in-out ${
                   isActive("/dashboard")
                     ? "text-[#FFFFFF] bg-[#160C29] shadow-sm"
                     : "text-[#59CCB1] hover:text-[#160C29] hover:bg-[#F0F0F0]"
@@ -66,7 +66,7 @@ export default function HeaderEnhanced() {
               </Link>
               <Link
                 href="/about"
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ease-in-out ${
                   isActive("/about")
                     ? "text-[#FFFFFF] bg-[#160C29] shadow-sm"
                     : "text-[#59CCB1] hover:text-[#160C29] hover:bg-[#F0F0F0]"
@@ -76,7 +76,7 @@ export default function HeaderEnhanced() {
               </Link>
               <Link
                 href="/terms"
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-300 ease-in-out ${
                   isActive("/terms")
                     ? "text-[#FFFFFF] bg-[#160C29] shadow-sm"
                     : "text-[#59CCB1] hover:text-[#160C29] hover:bg-[#F0F0F0]"
@@ -126,7 +126,7 @@ export default function HeaderEnhanced() {
 
       {/* Mobile menu, show/hide based on menu state */}
       <div
-        className={`sm:hidden transition-all duration-300 ease-in-out overflow-hidden ${
+        className={`sm:hidden transition-all duration-500 ease-in-out overflow-hidden ${
           mobileMenuOpen ? "max-h-60" : "max-h-0"
         }`}
         id="mobile-menu"

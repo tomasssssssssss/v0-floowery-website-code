@@ -4,8 +4,9 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Logo } from "./Logo"
+import { Button } from "@/components/ui/button"
 import { X, Menu } from "lucide-react"
-import { handleAnchorLinkClick } from "@/lib/smooth-scroll"
+import { motion } from "framer-motion"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -31,12 +32,6 @@ export function Header() {
             className={`text-[#F0F0F0] hover:text-[#59CCB1] transition-colors duration-200 font-semibold ${
               isActive("/") ? "border-b-2 border-[#59CCB1]" : ""
             }`}
-            onClick={(e) => {
-              if (pathname === "/") {
-                e.preventDefault()
-                window.scrollTo({ top: 0, behavior: "smooth" })
-              }
-            }}
           >
             Home
           </Link>
@@ -64,16 +59,24 @@ export function Header() {
           >
             Contact
           </Link>
-          <Link
-            href="/#results"
-            className={`text-[#F0F0F0] hover:text-[#59CCB1] transition-colors duration-200 font-semibold`}
-            onClick={(e) => handleAnchorLinkClick(e, { offset: 80 })}
-          >
-            Results
-          </Link>
         </nav>
 
-        {/* Auth Buttons removed */}
+        {/* Auth Buttons - Desktop */}
+        <div className="hidden md:flex items-center space-x-3 flex-shrink-0">
+          <Link href="/login">
+            <Button
+              variant="ghost"
+              className="text-[#F0F0F0] hover:text-[#160C29] hover:bg-[#F0F0F0] font-semibold py-1 px-3 h-auto"
+            >
+              Log in
+            </Button>
+          </Link>
+          <Link href="/register">
+            <Button className="bg-[#59CCB1] hover:bg-[#4AB19A] text-[#160C29] font-semibold py-1 px-3 h-auto">
+              Sign up
+            </Button>
+          </Link>
+        </div>
 
         {/* Mobile Menu Button */}
         <button
@@ -87,7 +90,13 @@ export function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#160C29] fixed inset-0 z-50 pt-16 px-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className="md:hidden bg-[#160C29] fixed inset-0 z-50 pt-16 px-4"
+        >
           <div className="absolute top-4 left-6">
             <Logo variant="dark" size="lg" />
           </div>
@@ -118,20 +127,19 @@ export function Header() {
             >
               Dashboard
             </Link>
-            <Link
-              href="/#results"
-              className="text-[#F0F0F0] text-xl font-semibold"
-              onClick={(e) => {
-                handleAnchorLinkClick(e, { offset: 80 })
-                setMobileMenuOpen(false)
-              }}
-            >
-              Results
-            </Link>
 
-            {/* Mobile auth buttons removed */}
+            <div className="pt-6 flex flex-col space-y-4">
+              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="outline" className="w-full text-[#F0F0F0] border-[#F0F0F0] font-semibold">
+                  Log in
+                </Button>
+              </Link>
+              <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="w-full bg-[#59CCB1] hover:bg-[#4AB19A] text-[#160C29] font-semibold">Sign up</Button>
+              </Link>
+            </div>
           </div>
-        </div>
+        </motion.div>
       )}
     </header>
   )

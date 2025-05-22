@@ -30,7 +30,10 @@ export default function Hero() {
               <Link href="#growth-package" className="primary-btn text-center">
                 Get Noticed Now
               </Link>
-              <Link href="/checkout?product=trial&trial=true" className="secondary-btn text-center">
+              <Link
+                href="/checkout?package=500&price=120&type=monthly&trial=true"
+                className="secondary-btn text-center"
+              >
                 Try Trial
               </Link>
             </div>

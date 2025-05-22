@@ -1,12 +1,15 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { ArrowRight } from "lucide-react"
 import PaymentTypeToggle from "./PaymentTypeToggle"
+import { Button } from "@/components/ui/button"
 
 export default function DirectCheckoutButtons() {
+  const router = useRouter()
   const [paymentType, setPaymentType] = useState<"one-time" | "monthly" | "yearly">("monthly")
+  const [isLoading, setIsLoading] = useState<string | null>(null)
 
   // Base packages
   const basePackages = [
@@ -74,6 +77,15 @@ export default function DirectCheckoutButtons() {
     price: calculatePrice(pkg.basePrice, paymentType),
   }))
 
+  const handleCheckout = (pkg) => {
+    setIsLoading(pkg.id)
+
+    // Navigate to checkout page with package details
+    setTimeout(() => {
+      router.push(`/checkout?package=${pkg.followers.split("–")[0]}&price=${pkg.price}&type=${paymentType}`)
+    }, 300)
+  }
+
   return (
     <div className="py-8">
       <div className="text-center mb-8">
@@ -85,13 +97,14 @@ export default function DirectCheckoutButtons() {
 
       <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
         {packages.map((pkg) => (
-          <Link
+          <Button
             key={pkg.id}
-            href={`/checkout?package=${pkg.followers.split("–")[0]}&price=${pkg.price}&type=${paymentType}`}
+            onClick={() => handleCheckout(pkg)}
+            disabled={isLoading === pkg.id}
             className={`
               relative rounded-xl border ${pkg.borderColor} p-6 transition-all duration-300
               ${pkg.color} ${pkg.textColor} hover:shadow-lg
-              flex flex-col items-center text-center
+              flex flex-col items-center text-center h-auto
             `}
           >
             {pkg.isPopular && (
@@ -116,10 +129,38 @@ export default function DirectCheckoutButtons() {
             )}
 
             <div className="flex items-center mt-4">
-              <span className="mr-2">Get Started</span>
-              <ArrowRight size={16} />
+              {isLoading === pkg.id ? (
+                <div className="flex items-center">
+                  <svg
+                    className="animate-spin h-4 w-4 mr-2"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Processing...
+                </div>
+              ) : (
+                <>
+                  <span className="mr-2">Get Started</span>
+                  <ArrowRight size={16} />
+                </>
+              )}
             </div>
-          </Link>
+          </Button>
         ))}
       </div>
     </div>
