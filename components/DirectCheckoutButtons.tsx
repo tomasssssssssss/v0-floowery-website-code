@@ -19,39 +19,31 @@ interface Package {
 interface DirectCheckoutButtonsProps {
   paymentType: "monthly" | "yearly"
   packages: Package[]
+  handleCheckout: (pkg: Package) => Promise<void>
   getBillingText: () => string
 }
 
-const DirectCheckoutButtons: React.FC<DirectCheckoutButtonsProps> = ({ paymentType, packages, getBillingText }) => {
+const DirectCheckoutButtons: React.FC<DirectCheckoutButtonsProps> = ({
+  paymentType,
+  packages,
+  handleCheckout,
+  getBillingText,
+}) => {
   const [isLoading, setIsLoading] = useState<string | null>(null)
-
-  const handleCheckout = (pkg) => {
-    setIsLoading(pkg.id)
-
-    // Create checkout URL with subdomain
-    const checkoutUrl = `https://checkout.floowery.com?package=${encodeURIComponent(pkg.followers.toString().split("–")[0])}&price=${pkg.price}&type=${paymentType}&name=${encodeURIComponent(pkg.name)}`
-
-    // Navigate to checkout subdomain
-    window.location.href = checkoutUrl
-  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {packages.map((pkg) => (
-        <a
-          href={`https://checkout.floowery.com?package=${encodeURIComponent(pkg.followers.toString().split("–")[0])}&price=${pkg.price}&type=${paymentType}&name=${encodeURIComponent(pkg.name)}`}
-          onClick={(e) => {
-            e.preventDefault()
-            handleCheckout(pkg)
-          }}
+        <button
+          key={pkg.id}
+          onClick={() => handleCheckout(pkg)}
+          disabled={isLoading === pkg.id}
           className={`
             relative rounded-xl border ${pkg.borderColor} p-6 transition-all duration-300
             ${pkg.color} ${pkg.textColor} hover:shadow-lg
             flex flex-col items-center text-center h-auto cursor-pointer
-            no-underline
-            ${isLoading === pkg.id ? "pointer-events-none opacity-50" : ""}
+            disabled:opacity-50 disabled:cursor-not-allowed
           `}
-          key={pkg.id}
         >
           {pkg.isPopular && (
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#160C29] text-white px-4 py-1 rounded-full text-sm font-medium">
@@ -99,7 +91,7 @@ const DirectCheckoutButtons: React.FC<DirectCheckoutButtonsProps> = ({ paymentTy
               </>
             )}
           </div>
-        </a>
+        </button>
       ))}
     </div>
   )

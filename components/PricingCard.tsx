@@ -9,10 +9,6 @@ interface PricingCardProps {
   isPopular?: boolean
   handleBuyNow: () => void
   isLoading: boolean
-  followers: string
-  finalPrice: string
-  paymentType: string
-  setIsLoading: (isLoading: boolean) => void
 }
 
 const PricingCard: React.FC<PricingCardProps> = ({
@@ -22,10 +18,6 @@ const PricingCard: React.FC<PricingCardProps> = ({
   isPopular = false,
   handleBuyNow,
   isLoading,
-  followers,
-  finalPrice,
-  paymentType,
-  setIsLoading,
 }) => {
   return (
     <div
@@ -59,16 +51,12 @@ const PricingCard: React.FC<PricingCardProps> = ({
           ))}
         </ul>
         <div className="mt-8">
-          <a
-            href={`https://checkout.floowery.com?package=${encodeURIComponent(followers.split("–")[0])}&price=${finalPrice}&type=${paymentType}&title=${encodeURIComponent(title)}`}
-            onClick={(e) => {
-              e.preventDefault()
-              handleBuyNow()
-            }}
+          <button
+            onClick={handleBuyNow}
+            disabled={isLoading}
             className={`
               w-full py-3 px-4 rounded-lg text-center font-medium transition-colors cursor-pointer
-              no-underline block
-              ${isLoading ? "pointer-events-none opacity-50" : ""}
+              disabled:opacity-50 disabled:cursor-not-allowed
               ${
                 isPopular
                   ? "bg-[#160C29] hover:bg-[#59CCB1] text-[#FFFFFF]"
@@ -96,7 +84,7 @@ const PricingCard: React.FC<PricingCardProps> = ({
             ) : (
               "Buy Now"
             )}
-          </a>
+          </button>
         </div>
       </div>
     </div>
