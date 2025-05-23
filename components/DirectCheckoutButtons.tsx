@@ -1,11 +1,9 @@
-"use client"
-
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
-export default function DirectCheckoutButtons() {
+const DirectCheckoutButtons = () => {
   return (
-    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+    <div className="flex flex-col md:flex-row gap-4">
       <Link
         href="/checkout?package=500&price=120&type=monthly"
         className="bg-[#160C29] hover:bg-[#2A1845] text-white px-8 py-3 rounded-lg font-medium transition-colors flex items-center justify-center"
@@ -23,3 +21,5 @@ export default function DirectCheckoutButtons() {
     </div>
   )
 }
+
+export default DirectCheckoutButtons
