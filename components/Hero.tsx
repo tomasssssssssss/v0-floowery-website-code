@@ -5,18 +5,20 @@ import type React from "react"
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export default function Hero() {
+  const router = useRouter()
   const [username, setUsername] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     // Handle form submission - redirect to checkout or next step
-    window.location.href = `/checkout?username=${encodeURIComponent(username)}`
+    router.push(`/checkout?username=${encodeURIComponent(username)}`)
   }
 
   return (
-    <section className="min-h-[calc(100vh-3rem)] flex items-center justify-center px-6 gradient-bg">
+    <section className="py-16 md:py-24 flex items-center justify-center px-6 gradient-bg">
       <div className="container mx-auto max-w-6xl">
         <div className="flex flex-col md:flex-row items-center justify-center">
           <div className="md:w-1/2 mb-10 md:mb-0 text-center md:text-left">

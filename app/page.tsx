@@ -10,10 +10,12 @@ import Hero from "@/components/Hero"
 import BeforeAfterComparison from "@/components/BeforeAfterComparison"
 import BenefitsList from "@/components/BenefitsList"
 import SimpleTestimonials from "@/components/simple-testimonials"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly")
+  const router = useRouter()
 
   const toggleFaq = (index: number) => {
     setExpandedFaq(expandedFaq === index ? null : index)
@@ -294,12 +296,12 @@ export default function Home() {
                   <CreditCard className="h-5 w-5 text-[#59CCB1] mr-2" />
                   <span className="text-sm font-medium text-gray-700">One-time payment</span>
                 </div>
-                <Link
-                  href="/checkout?plan=trial&price=15"
+                <button
+                  onClick={() => router.push("/checkout?plan=trial&price=15")}
                   className="px-6 py-3 bg-[#160C29] hover:bg-[#59CCB1] text-white font-medium rounded-lg text-center transition-colors duration-300 min-w-[180px]"
                 >
                   Get Started for €15
-                </Link>
+                </button>
               </div>
             </div>
           </div>
@@ -368,8 +370,12 @@ export default function Home() {
                     ))}
                   </ul>
 
-                  <Link
-                    href={`/checkout?package=${plan.followers.split("–")[0]}&price=${plan.price}&billing=${billingPeriod}`}
+                  <button
+                    onClick={() =>
+                      router.push(
+                        `/checkout?package=${plan.followers.split("–")[0]}&price=${plan.price}&billing=${billingPeriod}`,
+                      )
+                    }
                     className={`
                       block w-full py-2 sm:py-3 px-3 sm:px-4 rounded-lg text-center font-medium transition-colors text-sm sm:text-base
                       ${
@@ -380,7 +386,7 @@ export default function Home() {
                     `}
                   >
                     Buy Now
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}

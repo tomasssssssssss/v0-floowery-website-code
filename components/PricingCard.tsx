@@ -87,10 +87,15 @@ export default function PricingCard({
   const handleBuyNow = () => {
     setIsLoading(true)
 
-    // Navigate to checkout page with package details
-    setTimeout(() => {
-      router.push(`/checkout?package=${followers.split("–")[0]}&price=${finalPrice}&type=${paymentType}`)
-    }, 300)
+    try {
+      // Navigate to checkout page with package details
+      setTimeout(() => {
+        router.push(`/checkout?package=${followers.split("–")[0]}&price=${finalPrice}&type=${paymentType}`)
+      }, 300)
+    } catch (error) {
+      console.error("Navigation error:", error)
+      setIsLoading(false)
+    }
   }
 
   return (

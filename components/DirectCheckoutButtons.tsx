@@ -80,10 +80,15 @@ export default function DirectCheckoutButtons() {
   const handleCheckout = (pkg) => {
     setIsLoading(pkg.id)
 
-    // Navigate to checkout page with package details
-    setTimeout(() => {
-      router.push(`/checkout?package=${pkg.followers.split("–")[0]}&price=${pkg.price}&type=${paymentType}`)
-    }, 300)
+    try {
+      // Navigate to checkout page with package details
+      setTimeout(() => {
+        router.push(`/checkout?package=${pkg.followers.split("–")[0]}&price=${pkg.price}&type=${paymentType}`)
+      }, 300)
+    } catch (error) {
+      console.error("Navigation error:", error)
+      setIsLoading(null)
+    }
   }
 
   return (
