@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, CheckCircle } from "lucide-react"
 import Image from "next/image"
 
 export default function ContactPage() {
@@ -55,27 +55,21 @@ export default function ContactPage() {
           </Link>
 
           <h1 className="text-3xl font-bold text-[#59CCB1] mb-2">Contact Support</h1>
-          <p className="text-[#444444] mb-8">Need help or have questions? We're here to assist you!</p>
+          <p className="text-[#444444] mb-8">
+            Have a question or need help? Fill out the form below and our team will get back to you as soon as possible.
+          </p>
 
-          <div className="bg-[#F0E6FF] rounded-lg p-8 text-center">
-            <div className="bg-[#160C29] rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <svg className="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                />
-              </svg>
+          <div className="bg-green-50 rounded-lg p-8 text-center">
+            <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <h2 className="text-xl font-semibold text-[#160C29] mb-2">Message Us</h2>
-            <p className="text-[#444444] mb-6">Send us an email and we'll get back to you within 24 hours.</p>
-            <a
-              href="mailto:support@floowery.com"
-              className="inline-flex items-center justify-center bg-[#160C29] hover:bg-[#59CCB1] text-white px-6 py-3 rounded-lg font-medium transition-colors"
-            >
-              support@floowery.com
-            </a>
+            <h2 className="text-xl font-semibold text-[#59CCB1] mb-2">Message Sent!</h2>
+            <p className="text-[#444444] mb-6">
+              Thank you for contacting us. We've received your message and will respond within 24 hours.
+            </p>
+            <Link href="/">
+              <Button className="bg-[#160C29] hover:bg-[#59CCB1] text-white">Return to Home</Button>
+            </Link>
           </div>
         </div>
       </main>
