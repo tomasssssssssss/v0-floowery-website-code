@@ -4,7 +4,6 @@ import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Logo } from "./Logo"
-import { Button } from "@/components/ui/button"
 import { X, Menu } from "lucide-react"
 import { motion } from "framer-motion"
 
@@ -61,23 +60,6 @@ export function Header() {
           </Link>
         </nav>
 
-        {/* Auth Buttons - Desktop */}
-        <div className="hidden md:flex items-center space-x-3 flex-shrink-0">
-          <Link href="/login">
-            <Button
-              variant="ghost"
-              className="text-[#F0F0F0] hover:text-[#160C29] hover:bg-[#F0F0F0] font-semibold py-1 px-3 h-auto"
-            >
-              Log in
-            </Button>
-          </Link>
-          <Link href="/register">
-            <Button className="bg-[#59CCB1] hover:bg-[#4AB19A] text-[#160C29] font-semibold py-1 px-3 h-auto">
-              Sign up
-            </Button>
-          </Link>
-        </div>
-
         {/* Mobile Menu Button */}
         <button
           className="md:hidden text-[#F0F0F0] p-1.5 rounded-md hover:bg-[#F0F0F0]/10"
@@ -127,17 +109,6 @@ export function Header() {
             >
               Dashboard
             </Link>
-
-            <div className="pt-6 flex flex-col space-y-4">
-              <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="outline" className="w-full text-[#F0F0F0] border-[#F0F0F0] font-semibold">
-                  Log in
-                </Button>
-              </Link>
-              <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
-                <Button className="w-full bg-[#59CCB1] hover:bg-[#4AB19A] text-[#160C29] font-semibold">Sign up</Button>
-              </Link>
-            </div>
           </div>
         </motion.div>
       )}
