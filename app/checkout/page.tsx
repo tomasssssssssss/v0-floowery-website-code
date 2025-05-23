@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import Link from "next/link"
@@ -14,6 +16,29 @@ const COLOR_LIGHT = "#F0F0F0"
 const COLOR_PRIMARY = "#160C29"
 const COLOR_SECONDARY = "#59CCB1"
 
+interface ServicePackage {
+  id: string
+  name: string
+  followers: string
+  basePrice: number
+  price: number
+  features: string[]
+  isTrial?: boolean
+}
+
+interface FormData {
+  name: string
+  email: string
+  instagram: string
+  paymentMethod: string
+}
+
+interface FormErrors {
+  name: string
+  email: string
+  instagram: string
+}
+
 export default function Checkout() {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -22,10 +47,22 @@ export default function Checkout() {
   const initialType = searchParams.get("type") || "monthly"
   const isTrial = searchParams.get("product") === "trial" || searchParams.get("trial") === "true"
 
+  // Initialize payment type state
+  const [paymentType, setPaymentType] = useState(
+    isTrial || initialType === "one-time" ? "monthly" : (initialType as "monthly" | "yearly"),
+  )
+
   // Add this useEffect to scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0)
-  }, [])
+
+    // Update selected package when URL params change
+    const newPackages = getServicePackages(paymentType)
+    const foundPackage = findPackageByType(newPackages, paymentType, initialPackage)
+    if (foundPackage) {
+      setSelectedPackage(foundPackage)
+    }
+  }, [initialPackage, initialPrice, initialType, paymentType])
 
   // Base prices for each package
   const basePackagePrices = {
@@ -52,7 +89,7 @@ export default function Checkout() {
   }
 
   // Available service packages with updated prices
-  const getServicePackages = (paymentType) => {
+  const getServicePackages = (paymentType: string): ServicePackage[] => {
     const regularPackages = [
       {
         id: "basic",
@@ -113,11 +150,6 @@ export default function Checkout() {
     return regularPackages
   }
 
-  // Initialize payment type state
-  const [paymentType, setPaymentType] = useState(
-    isTrial || initialType === "one-time" ? "monthly" : (initialType as "monthly" | "yearly"),
-  )
-
   // Get service packages based on current payment type
   const servicePackages = getServicePackages(paymentType)
 
@@ -142,14 +174,14 @@ export default function Checkout() {
     findPackageByType(servicePackages, paymentType, initialPackage),
   )
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     instagram: "",
     paymentMethod: "credit-card",
   })
 
-  const [formErrors, setFormErrors] = useState({
+  const [formErrors, setFormErrors] = useState<FormErrors>({
     name: "",
     email: "",
     instagram: "",
@@ -188,12 +220,12 @@ export default function Checkout() {
     return isValid
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
 
     // Clear error when user types
-    if (formErrors[name]) {
+    if (formErrors[name as keyof typeof formErrors]) {
       setFormErrors((prev) => ({
         ...prev,
         [name]: "",
@@ -235,7 +267,7 @@ export default function Checkout() {
     }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!validateForm()) {
@@ -244,12 +276,17 @@ export default function Checkout() {
 
     setIsSubmitting(true)
 
-    // Simulate processing delay
-    setTimeout(() => {
-      setFormSubmitted(true)
-      // In a real app, you would process payment here
-      router.push(`/checkout/success?plan=${selectedPackage?.id}&type=${paymentType}`)
-    }, 1500)
+    try {
+      // Simulate processing delay
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
+      // Navigate to success page
+      const successUrl = `/checkout/success?plan=${selectedPackage?.id}&type=${paymentType}&price=${selectedPackage?.price}`
+      window.location.href = successUrl
+    } catch (error) {
+      console.error("Checkout error:", error)
+      setIsSubmitting(false)
+    }
   }
 
   // Get the billing period text
