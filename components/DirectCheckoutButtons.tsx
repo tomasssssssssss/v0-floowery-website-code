@@ -1,173 +1,108 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import type React from "react"
+
 import { ArrowRight } from "lucide-react"
-import PaymentTypeToggle from "./PaymentTypeToggle"
-import { Button } from "@/components/ui/button"
+import { useState } from "react"
 
-export default function DirectCheckoutButtons() {
-  const router = useRouter()
-  const [paymentType, setPaymentType] = useState<"one-time" | "monthly" | "yearly">("monthly")
+interface Package {
+  id: string
+  name: string
+  followers: number
+  price: number
+  color: string
+  textColor: string
+  borderColor: string
+  isPopular?: boolean
+}
+
+interface DirectCheckoutButtonsProps {
+  paymentType: "monthly" | "yearly"
+  packages: Package[]
+  getBillingText: () => string
+}
+
+const DirectCheckoutButtons: React.FC<DirectCheckoutButtonsProps> = ({ paymentType, packages, getBillingText }) => {
   const [isLoading, setIsLoading] = useState<string | null>(null)
-
-  // Base packages
-  const basePackages = [
-    {
-      id: "basic",
-      name: "Basic Growth",
-      followers: "500–1,000",
-      basePrice: 120,
-      color: "bg-[#F0E6FF] hover:bg-[#E6D0FF]",
-      textColor: "text-[#160C29]",
-      borderColor: "border-[#160C29]",
-    },
-    {
-      id: "standard",
-      name: "Standard Growth",
-      followers: "1,000–2,000",
-      basePrice: 220,
-      color: "bg-[#160C29] hover:bg-[#2A1845]",
-      textColor: "text-white",
-      borderColor: "border-[#2A1845]",
-      isPopular: true,
-    },
-    {
-      id: "premium",
-      name: "Premium Growth",
-      followers: "2,500–5,000",
-      basePrice: 320,
-      color: "bg-[#F0E6FF] hover:bg-[#E6D0FF]",
-      textColor: "text-[#160C29]",
-      borderColor: "border-[#160C29]",
-    },
-  ]
-
-  // Calculate price based on payment type
-  const calculatePrice = (basePrice: number, type: string) => {
-    switch (type) {
-      case "one-time":
-        return basePrice
-      case "monthly":
-        // Monthly price should be about 40% of one-time price
-        return Math.round(basePrice * 0.4)
-      case "yearly":
-        // Yearly price should be monthly price * 10 (2 months free)
-        return Math.round(basePrice * 0.4 * 10)
-      default:
-        return basePrice
-    }
-  }
-
-  // Get the billing period text
-  const getBillingText = () => {
-    switch (paymentType) {
-      case "monthly":
-        return "per month"
-      case "yearly":
-        return "per year"
-      default:
-        return "per month"
-    }
-  }
-
-  // Calculate packages with adjusted prices
-  const packages = basePackages.map((pkg) => ({
-    ...pkg,
-    price: calculatePrice(pkg.basePrice, paymentType),
-  }))
 
   const handleCheckout = (pkg) => {
     setIsLoading(pkg.id)
 
-    try {
-      // Navigate to checkout page with package details
-      setTimeout(() => {
-        router.push(`/checkout?package=${pkg.followers.split("–")[0]}&price=${pkg.price}&type=${paymentType}`)
-      }, 300)
-    } catch (error) {
-      console.error("Navigation error:", error)
-      setIsLoading(null)
-    }
+    // Create checkout URL with subdomain
+    const checkoutUrl = `https://checkout.floowery.com?package=${encodeURIComponent(pkg.followers.toString().split("–")[0])}&price=${pkg.price}&type=${paymentType}&name=${encodeURIComponent(pkg.name)}`
+
+    // Navigate to checkout subdomain
+    window.location.href = checkoutUrl
   }
 
   return (
-    <div className="py-8">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold mb-3">Choose Your Growth Package</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">Select the package that best fits your Instagram growth needs</p>
-      </div>
-
-      <PaymentTypeToggle selectedType={paymentType} onChange={setPaymentType} />
-
-      <div className="grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-        {packages.map((pkg) => (
-          <Button
-            key={pkg.id}
-            onClick={() => handleCheckout(pkg)}
-            disabled={isLoading === pkg.id}
-            className={`
-              relative rounded-xl border ${pkg.borderColor} p-6 transition-all duration-300
-              ${pkg.color} ${pkg.textColor} hover:shadow-lg
-              flex flex-col items-center text-center h-auto
-            `}
-          >
-            {pkg.isPopular && (
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#160C29] text-white px-4 py-1 rounded-full text-sm font-medium">
-                Most Popular
-              </div>
-            )}
-
-            <h3 className="text-xl font-bold mt-4">{pkg.name}</h3>
-            <p className={`${pkg.id === "standard" ? "text-white/90" : "text-gray-600"} mb-2`}>
-              {pkg.followers} followers
-            </p>
-
-            <div className="text-3xl font-bold my-3">${pkg.price}</div>
-            <div className={`text-sm ${pkg.id === "standard" ? "text-white/80" : "text-gray-500"}`}>
-              {getBillingText()}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {packages.map((pkg) => (
+        <a
+          href={`https://checkout.floowery.com?package=${encodeURIComponent(pkg.followers.toString().split("–")[0])}&price=${pkg.price}&type=${paymentType}&name=${encodeURIComponent(pkg.name)}`}
+          onClick={(e) => {
+            e.preventDefault()
+            handleCheckout(pkg)
+          }}
+          className={`
+            relative rounded-xl border ${pkg.borderColor} p-6 transition-all duration-300
+            ${pkg.color} ${pkg.textColor} hover:shadow-lg
+            flex flex-col items-center text-center h-auto cursor-pointer
+            no-underline
+            ${isLoading === pkg.id ? "pointer-events-none opacity-50" : ""}
+          `}
+          key={pkg.id}
+        >
+          {pkg.isPopular && (
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-[#160C29] text-white px-4 py-1 rounded-full text-sm font-medium">
+              Most Popular
             </div>
-            {paymentType === "yearly" && (
-              <div className={`text-xs mt-1 ${pkg.id === "standard" ? "text-white/90" : "text-green-600"} font-medium`}>
-                {pkg.followers} followers monthly
-              </div>
-            )}
+          )}
 
-            <div className="flex items-center mt-4">
-              {isLoading === pkg.id ? (
-                <div className="flex items-center">
-                  <svg
-                    className="animate-spin h-4 w-4 mr-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Processing...
-                </div>
-              ) : (
-                <>
-                  <span className="mr-2">Get Started</span>
-                  <ArrowRight size={16} />
-                </>
-              )}
+          <h3 className="text-xl font-bold mt-4">{pkg.name}</h3>
+          <p className={`${pkg.id === "standard" ? "text-white/90" : "text-gray-600"} mb-2`}>
+            {pkg.followers} followers
+          </p>
+
+          <div className="text-3xl font-bold my-3">${pkg.price}</div>
+          <div className={`text-sm ${pkg.id === "standard" ? "text-white/80" : "text-gray-500"}`}>
+            {getBillingText()}
+          </div>
+          {paymentType === "yearly" && (
+            <div className={`text-xs mt-1 ${pkg.id === "standard" ? "text-white/90" : "text-green-600"} font-medium`}>
+              {pkg.followers} followers monthly
             </div>
-          </Button>
-        ))}
-      </div>
+          )}
+
+          <div className="flex items-center mt-4">
+            {isLoading === pkg.id ? (
+              <div className="flex items-center">
+                <svg
+                  className="animate-spin h-4 w-4 mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Processing...
+              </div>
+            ) : (
+              <>
+                <span className="mr-2">Get Started</span>
+                <ArrowRight size={16} />
+              </>
+            )}
+          </div>
+        </a>
+      ))}
     </div>
   )
 }
+
+export default DirectCheckoutButtons
