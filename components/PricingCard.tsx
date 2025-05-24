@@ -1,53 +1,78 @@
-import type React from "react"
-import Link from "next/link"
+"use client"
+
+import { useRouter } from "next/navigation"
+import { Check } from "lucide-react"
 
 interface PricingCardProps {
+  title: string
   followers: string
   price: number
-  paymentType: string
+  paymentType: "one-time" | "monthly" | "yearly"
+  features: string[]
   isPopular?: boolean
 }
 
-const PricingCard: React.FC<PricingCardProps> = ({ followers, price, paymentType, isPopular = false }) => {
+export default function PricingCard({
+  title,
+  followers,
+  price,
+  paymentType,
+  features,
+  isPopular = false,
+}: PricingCardProps) {
+  const router = useRouter()
+
+  const getBillingText = () => {
+    switch (paymentType) {
+      case "one-time":
+        return "one-time"
+      case "monthly":
+        return "per month"
+      case "yearly":
+        return "per year"
+      default:
+        return "per month"
+    }
+  }
+
+  const handleBuyNow = () => {
+    const packageValue = followers.split("–")[0]
+    router.push(`/checkout?package=${packageValue}&price=${price}&type=${paymentType}`)
+  }
+
   return (
     <div
       className={`
-      relative rounded-2xl p-6
-      ${isPopular ? "bg-[#F4EFF7]" : "bg-white border border-gray-200"}
+      relative rounded-2xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl
+      ${isPopular ? "border-2 border-[#160C29] transform scale-105" : "border border-gray-200"}
     `}
     >
       {isPopular && (
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#160C29] text-white py-1 px-3 rounded-full text-sm font-medium">
-          Popular
+        <div className="absolute top-0 right-0 bg-[#160C29] text-white px-4 py-1 text-sm font-medium rounded-bl-lg">
+          Most Popular
         </div>
       )}
 
-      <h3 className="text-2xl font-semibold text-center text-[#160C29]">{followers}</h3>
-      <p className="text-center text-gray-500 mt-2">Followers</p>
+      <div className="bg-white p-6">
+        <h3 className="text-xl font-bold text-[#160C29] mb-2">{title}</h3>
+        <p className="text-[#59CCB1] mb-4">{followers} followers</p>
 
-      <div className="text-center mt-6">
-        <span className="text-4xl font-bold text-[#160C29]">${price}</span>
-        <span className="text-gray-500">/{paymentType}</span>
-      </div>
+        <div className="mb-6">
+          <div className="text-3xl font-bold text-[#160C29]">${price}</div>
+          <div className="text-sm text-gray-500">{getBillingText()}</div>
+        </div>
 
-      <ul className="mt-6 space-y-2">
-        <li className="flex items-center">
-          <span className="text-green-500 mr-2">✓</span>
-          <span>Dedicated Account Manager</span>
-        </li>
-        <li className="flex items-center">
-          <span className="text-green-500 mr-2">✓</span>
-          <span>24/7 Customer Support</span>
-        </li>
-        <li className="flex items-center">
-          <span className="text-green-500 mr-2">✓</span>
-          <span>Advanced Analytics Dashboard</span>
-        </li>
-      </ul>
+        <ul className="mb-6 space-y-2">
+          {features.map((feature, idx) => (
+            <li key={idx} className="flex items-center">
+              <Check className="h-4 w-4 text-green-500 mr-2" />
+              <span className="text-sm text-gray-700">{feature}</span>
+            </li>
+          ))}
+        </ul>
 
-      <div className="mt-8">
-        <Link
-          href={`/checkout?package=${encodeURIComponent(followers.split("–")[0])}&price=${encodeURIComponent(price.toString())}&type=${encodeURIComponent(paymentType)}`}
+        <button
+          onClick={handleBuyNow}
           className={`
             block w-full py-3 px-4 rounded-lg text-center font-medium transition-colors
             ${
@@ -58,10 +83,8 @@ const PricingCard: React.FC<PricingCardProps> = ({ followers, price, paymentType
           `}
         >
           Buy Now
-        </Link>
+        </button>
       </div>
     </div>
   )
 }
-
-export default PricingCard
