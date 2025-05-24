@@ -88,6 +88,33 @@
   }
 }
 
+/* Ensure smooth scrolling behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Force scroll position to top on page load */
+body {
+  overflow-x: hidden;
+}
+
+/* Additional scroll-to-top styles */
+.scroll-to-top {
+  scroll-behavior: auto !important;
+}
+
+/* Prevent scroll restoration by browser */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Force immediate scroll to top */
+.force-scroll-top {
+  scroll-behavior: auto;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 80px; /* Adjust based on your header height */

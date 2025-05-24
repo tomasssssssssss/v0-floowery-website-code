@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import "./globals.css"
 import SmoothScrollProvider from "@/components/SmoothScrollProvider"
+import ScrollToTop from "@/components/ScrollToTop"
 
 export const metadata: Metadata = {
   title: "v0 App",
@@ -17,6 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ScrollToTop />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>
     </html>

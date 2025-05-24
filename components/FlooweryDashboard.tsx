@@ -30,6 +30,10 @@ export default function FlooweryDashboard() {
       })
   }, [])
 
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   if (!metrics) return <p className="text-center py-20 text-gray-400">Loading dashboard...</p>
 
   return (

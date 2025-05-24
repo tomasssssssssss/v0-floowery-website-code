@@ -1,6 +1,5 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { Check } from "lucide-react"
 
 interface PricingCardProps {
@@ -20,8 +19,6 @@ export default function PricingCard({
   features,
   isPopular = false,
 }: PricingCardProps) {
-  const router = useRouter()
-
   const getBillingText = () => {
     switch (paymentType) {
       case "one-time":
@@ -36,8 +33,18 @@ export default function PricingCard({
   }
 
   const handleBuyNow = () => {
-    const packageValue = followers.split("–")[0]
-    router.push(`/checkout?package=${packageValue}&price=${price}&type=${paymentType}`)
+    try {
+      const packageValue = followers.split("–")[0]
+      const url = `/checkout?package=${packageValue}&price=${price}&type=${paymentType}`
+      console.log("Navigating to:", url) // Debug log
+
+      // Use window.location for guaranteed navigation
+      window.location.href = url
+    } catch (error) {
+      console.error("Navigation error:", error)
+      // Fallback navigation
+      window.location.href = "/checkout"
+    }
   }
 
   return (
@@ -72,15 +79,17 @@ export default function PricingCard({
         </ul>
 
         <button
+          type="button"
           onClick={handleBuyNow}
           className={`
-            block w-full py-3 px-4 rounded-lg text-center font-medium transition-colors
+            block w-full py-3 px-4 rounded-lg text-center font-medium transition-colors cursor-pointer
             ${
               isPopular
                 ? "bg-[#160C29] hover:bg-[#2A1845] text-white"
                 : "bg-white text-[#160C29] border border-[#160C29] hover:bg-[#160C29] hover:text-white"
             }
           `}
+          style={{ cursor: "pointer" }}
         >
           Buy Now
         </button>

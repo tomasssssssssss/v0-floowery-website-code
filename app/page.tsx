@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Check, ChevronDown, ChevronUp, Shield, Zap, Lock, Instagram, CreditCard, BadgeCheck } from "lucide-react"
 import TopBanner from "@/components/TopBanner"
@@ -14,6 +14,11 @@ import SimpleTestimonials from "@/components/simple-testimonials"
 export default function Home() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null)
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly")
+
+  useEffect(() => {
+    // Force scroll to top on page load
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+  }, [])
 
   const toggleFaq = (index: number) => {
     setExpandedFaq(expandedFaq === index ? null : index)
