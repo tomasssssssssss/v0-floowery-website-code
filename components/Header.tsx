@@ -50,14 +50,6 @@ export function Header() {
           >
             Dashboard
           </Link>
-          <Link
-            href="/contact"
-            className={`text-[#F0F0F0] hover:text-[#59CCB1] transition-colors duration-200 font-semibold ${
-              isActive("/contact") ? "border-b-2 border-[#59CCB1]" : ""
-            }`}
-          >
-            Contact
-          </Link>
         </nav>
 
         {/* Mobile Menu Button */}

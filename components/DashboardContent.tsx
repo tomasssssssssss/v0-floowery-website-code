@@ -6,7 +6,7 @@ import { useState } from "react"
 import { Instagram, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 
-export default function InstagramDashboard() {
+export default function DashboardContent() {
   const [username, setUsername] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)

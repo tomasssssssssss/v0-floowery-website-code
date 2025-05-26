@@ -1,9 +1,9 @@
 "use client"
 
 import { useEffect } from "react"
-import InstagramDashboard from "@/components/InstagramDashboard"
 import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
+import DashboardContent from "@/components/DashboardContent"
 
 export default function DashboardPage() {
   useEffect(() => {
@@ -14,7 +14,7 @@ export default function DashboardPage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-grow">
-        <InstagramDashboard />
+        <DashboardContent />
       </main>
       <Footer />
     </div>
