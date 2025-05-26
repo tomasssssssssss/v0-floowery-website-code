@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, CheckCircle } from "lucide-react"
 import Image from "next/image"
 
 export default function ContactPage() {
@@ -45,34 +44,6 @@ export default function ContactPage() {
           </div>
         </div>
       </header>
-
-      {/* Main Content */}
-      <main className="py-12 px-6">
-        <div className="max-w-2xl mx-auto">
-          <Link href="/faq" className="inline-flex items-center text-[#744aec] hover:text-[#59CCB1] mb-6">
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to FAQ
-          </Link>
-
-          <h1 className="text-3xl font-bold text-[#59CCB1] mb-2">Contact Support</h1>
-          <p className="text-[#444444] mb-8">
-            Have a question or need help? Fill out the form below and our team will get back to you as soon as possible.
-          </p>
-
-          <div className="bg-green-50 rounded-lg p-8 text-center">
-            <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="h-8 w-8 text-green-600" />
-            </div>
-            <h2 className="text-xl font-semibold text-[#59CCB1] mb-2">Message Sent!</h2>
-            <p className="text-[#444444] mb-6">
-              Thank you for contacting us. We've received your message and will respond within 24 hours.
-            </p>
-            <Link href="/">
-              <Button className="bg-[#160C29] hover:bg-[#59CCB1] text-white">Return to Home</Button>
-            </Link>
-          </div>
-        </div>
-      </main>
 
       {/* Footer */}
       <footer className="bg-[#f0f0f0] py-6 px-6 border-t border-[#d9d5e9] mt-12">

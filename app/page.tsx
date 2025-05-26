@@ -16,8 +16,24 @@ export default function Home() {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly")
 
   useEffect(() => {
-    // Force scroll to top on page load
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+    // Prevent scroll restoration
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual"
+    }
+
+    // Force immediate scroll to top
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+
+    // Additional timeout to ensure it works after all content loads
+    const timer = setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+    }, 100)
+
+    return () => clearTimeout(timer)
   }, [])
 
   const toggleFaq = (index: number) => {
@@ -117,8 +133,15 @@ export default function Home() {
       <Header />
 
       {/* Hero Section */}
-      <section className="pt-12 pb-16 px-2 sm:px-6 gradient-bg w-full">
+      <section className="pt-8 pb-16 px-2 sm:px-6 gradient-bg w-full min-h-screen flex items-center">
         <div className="w-full mx-auto sm:container sm:max-w-6xl">
+          {/* Add a small announcement above hero */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 text-sm font-medium text-[#160C29] border border-white/30">
+              <span className="w-2 h-2 bg-[#59CCB1] rounded-full mr-2 animate-pulse"></span>🚀 Join 10,000+ creators
+              growing their Instagram
+            </div>
+          </div>
           <Hero />
         </div>
       </section>

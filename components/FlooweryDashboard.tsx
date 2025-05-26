@@ -9,7 +9,7 @@ export default function FlooweryDashboard() {
   const [metrics, setMetrics] = useState(null)
 
   useEffect(() => {
-    fetch("/dashboard-data")
+    fetch("/api/dashboard-data")
       .then((res) => res.json())
       .then((d) => {
         if (d.logs) {

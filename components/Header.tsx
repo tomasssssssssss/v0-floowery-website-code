@@ -96,11 +96,11 @@ export function Header() {
               Home
             </Link>
             <Link
-              href="/checkout"
-              className={`text-[#F0F0F0] text-xl font-semibold ${isActive("/checkout") ? "text-[#59CCB1]" : ""}`}
+              href="/pricing"
+              className={`text-[#F0F0F0] text-xl font-semibold ${isActive("/pricing") ? "text-[#59CCB1]" : ""}`}
               onClick={() => setMobileMenuOpen(false)}
             >
-              Checkout
+              Pricing
             </Link>
             <Link
               href="/dashboard"

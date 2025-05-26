@@ -139,7 +139,6 @@ export default function Checkout() {
             "Full access to dashboard",
             "No commitment",
             "Real people, not bots",
-            "Steady drip delivery",
             "Monthly subscription",
           ],
         },
@@ -338,7 +337,7 @@ export default function Checkout() {
               <Sparkles className="h-6 w-6 mr-2 text-[#F0F0F0]" />
               <h2 className="text-xl font-bold">SPECIAL TRIAL OFFER</h2>
             </div>
-            <p className="text-lg">Get your first month for just €15 per month. Cancel anytime.</p>
+            <p className="text-lg">Get your first month for just $15 per month. Cancel anytime.</p>
           </div>
         )}
 
@@ -483,7 +482,7 @@ export default function Checkout() {
                             <div className="mt-4 bg-[#59CCB1] bg-opacity-10 p-3 rounded-lg border border-[#59CCB1] text-sm">
                               <p className="font-medium text-[#160C29]">Special Trial Offer:</p>
                               <p className="text-[#160C29] text-opacity-70">
-                                Monthly subscription of €15 for 50-100 followers
+                                Monthly subscription of $15 for 50-100 followers
                               </p>
                             </div>
                           )}
@@ -492,7 +491,7 @@ export default function Checkout() {
                         <div className="text-right">
                           {pkg.isTrial ? (
                             <>
-                              <div className="text-3xl font-bold text-[#160C29]">€{pkg.price}</div>
+                              <div className="text-3xl font-bold text-[#160C29]">$${pkg.price}</div>
                               <div className="text-sm text-[#160C29] text-opacity-50">monthly subscription</div>
                               <div className="text-xs text-[#59CCB1] font-medium mt-1">Limited Time Offer</div>
                             </>
@@ -621,7 +620,7 @@ export default function Checkout() {
                       <div className="flex justify-between mb-3">
                         <span className="text-[#160C29] font-medium">{selectedPackage.name}</span>
                         <span className="font-bold text-[#160C29]">
-                          {selectedPackage.isTrial ? `€${selectedPackage.price}` : `$${selectedPackage.price}`}
+                          {selectedPackage.isTrial ? `$${selectedPackage.price}` : `$${selectedPackage.price}`}
                         </span>
                       </div>
                       <div className="text-sm text-[#160C29] text-opacity-70 mb-1 flex items-center">
@@ -637,7 +636,7 @@ export default function Checkout() {
                         <div className="bg-[#59CCB1] bg-opacity-10 p-4 rounded-lg mb-4 text-sm border border-[#59CCB1]">
                           <p className="font-medium text-[#160C29] mb-1">Trial Offer Details:</p>
                           <p className="text-[#160C29] text-opacity-70">
-                            €15 monthly subscription for 50-100 real followers.
+                            $15 monthly subscription for 50-100 real followers.
                           </p>
                         </div>
                       )}
@@ -646,7 +645,7 @@ export default function Checkout() {
                         <div className="flex justify-between font-bold text-lg">
                           <span>Total</span>
                           <span className="text-[#160C29]">
-                            {selectedPackage.isTrial ? `€${selectedPackage.price}` : `$${selectedPackage.price}`}
+                            {selectedPackage.isTrial ? `$${selectedPackage.price}` : `$${selectedPackage.price}`}
                           </span>
                         </div>
                         {paymentType !== "one-time" && !selectedPackage.isTrial && (

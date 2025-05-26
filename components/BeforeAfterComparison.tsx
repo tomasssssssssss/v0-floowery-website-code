@@ -226,11 +226,27 @@ export default function BeforeAfterComparison() {
     `
     document.head.appendChild(style)
 
+    // Add GPU acceleration styles
+    const gpuStyle = document.createElement("style")
+    gpuStyle.textContent = `
+      .smooth-transition {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+        will-change: transform, opacity;
+      }
+      .image-container {
+        transform: translate3d(0, 0, 0);
+      }
+    `
+    document.head.appendChild(gpuStyle)
+
     // Clean up when component unmounts
     return () => {
       document.documentElement.style.scrollBehavior = ""
       document.body.classList.remove("smooth-scroll")
       document.head.removeChild(style)
+      document.head.removeChild(gpuStyle)
     }
   }, [])
 
@@ -674,27 +690,32 @@ function ExampleCard({ example }: { example: Example }) {
             {isShowingAfter ? (
               <motion.div
                 key="after"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="flex justify-center w-full"
+                initial={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 1.02, filter: "blur(4px)" }}
+                transition={{
+                  duration: 0.08,
+                  ease: [0.25, 0.1, 0.25, 1],
+                  type: "tween",
+                }}
+                className="flex justify-center w-full smooth-transition"
+                style={{ transform: "translateZ(0)" }}
               >
-                <div className="w-full max-w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] relative transition-all duration-700">
+                <div className="w-full max-w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] relative">
                   <Image
                     src={afterImageSrc || "/placeholder.svg"}
                     alt="Instagram profile after using Floowery"
                     width={1000}
                     height={1200}
-                    className="object-contain w-full h-auto min-w-[320px] max-h-[800px] transition-all duration-700"
+                    className="object-contain w-full h-auto min-w-[320px] max-h-[800px]"
                     onError={() => handleImageError("after")}
                     priority
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 95vw, (max-width: 1024px) 90vw, 85vw"
                     style={{ objectFit: "contain", width: "100%" }}
                   />
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center bg-[#160C29]/40 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="bg-white px-6 py-3 rounded-full flex items-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+                <div className="absolute inset-0 flex items-center justify-center bg-[#160C29]/40 opacity-0 hover:opacity-100 transition-opacity duration-75 pointer-events-none">
+                  <div className="bg-white px-6 py-3 rounded-full flex items-center shadow-lg transform hover:scale-102 transition-transform duration-75">
                     <span className="text-[#59CCB1] font-medium mr-2">See Before</span>
                     <ArrowRight className="h-5 w-5 text-[#160C29] rotate-180" />
                   </div>
@@ -703,27 +724,32 @@ function ExampleCard({ example }: { example: Example }) {
             ) : (
               <motion.div
                 key="before"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="flex justify-center w-full"
+                initial={{ opacity: 0, scale: 0.98, filter: "blur(4px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, scale: 1.02, filter: "blur(4px)" }}
+                transition={{
+                  duration: 0.08,
+                  ease: [0.25, 0.1, 0.25, 1],
+                  type: "tween",
+                }}
+                className="flex justify-center w-full smooth-transition"
+                style={{ transform: "translateZ(0)" }}
               >
-                <div className="w-full max-w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] relative transition-all duration-700">
+                <div className="w-full max-w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] relative">
                   <Image
                     src={beforeImageSrc || "/placeholder.svg"}
                     alt="Instagram profile before using Floowery"
                     width={1000}
                     height={1200}
-                    className="object-contain w-full h-auto min-w-[320px] max-h-[800px] transition-all duration-700"
+                    className="object-contain w-full h-auto min-w-[320px] max-h-[800px]"
                     onError={() => handleImageError("before")}
                     priority
                     sizes="(max-width: 640px) 100vw, (max-width: 768px) 95vw, (max-width: 1024px) 90vw, 85vw"
                     style={{ objectFit: "contain", width: "100%" }}
                   />
                 </div>
-                <div className="absolute inset-0 flex items-center justify-center bg-[#160C29]/40 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                  <div className="bg-white px-6 py-3 rounded-full flex items-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+                <div className="absolute inset-0 flex items-center justify-center bg-[#160C29]/40 opacity-0 hover:opacity-100 transition-opacity duration-75 pointer-events-none">
+                  <div className="bg-white px-6 py-3 rounded-full flex items-center shadow-lg transform hover:scale-102 transition-transform duration-75">
                     <span className="text-[#59CCB1] font-medium mr-2">See After Results</span>
                     <ArrowRight className="h-5 w-5 text-[#160C29]" />
                   </div>
@@ -752,10 +778,13 @@ function ExampleCard({ example }: { example: Example }) {
                     <motion.span
                       key="before-followers"
                       className="absolute text-[#160C29] font-bold text-xl"
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -20, opacity: 0 }}
-                      transition={{ duration: 0.5 }}
+                      initial={{ y: 15, opacity: 0, filter: "blur(2px)" }}
+                      animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                      exit={{ y: -15, opacity: 0, filter: "blur(2px)" }}
+                      transition={{
+                        duration: 0.06,
+                        ease: [0.25, 0.1, 0.25, 1],
+                      }}
                     >
                       {example.beforeFollowers}
                     </motion.span>
@@ -763,10 +792,13 @@ function ExampleCard({ example }: { example: Example }) {
                     <motion.span
                       key="after-followers"
                       className="absolute text-[#160C29] font-bold text-xl"
-                      initial={{ y: 20, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -20, opacity: 0 }}
-                      transition={{ duration: 0.5 }}
+                      initial={{ y: 15, opacity: 0, filter: "blur(2px)" }}
+                      animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
+                      exit={{ y: -15, opacity: 0, filter: "blur(2px)" }}
+                      transition={{
+                        duration: 0.06,
+                        ease: [0.25, 0.1, 0.25, 1],
+                      }}
                     >
                       {example.afterFollowers}
                     </motion.span>
@@ -776,9 +808,13 @@ function ExampleCard({ example }: { example: Example }) {
             </div>
             {isShowingAfter && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+                initial={{ opacity: 0, y: 8, scale: 0.95, filter: "blur(2px)" }}
+                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                transition={{
+                  duration: 0.05,
+                  delay: 0.02,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
                 className="text-sm font-medium px-3 py-1 bg-[#59CCB1] text-white rounded-full inline-block"
               >
                 {growth.raw} followers ({growth.percent})
@@ -788,7 +824,7 @@ function ExampleCard({ example }: { example: Example }) {
 
           <button
             onClick={toggleView}
-            className="bg-[#160C29] hover:bg-[#59CCB1] text-white px-6 py-3 rounded-lg transition-all duration-400 ease-in-out text-base font-medium flex items-center justify-center shadow-md hover:shadow-lg transform hover:scale-105"
+            className="bg-[#160C29] hover:bg-[#59CCB1] text-white px-6 py-3 rounded-lg transition-all duration-50 ease-out text-base font-medium flex items-center justify-center shadow-md hover:shadow-lg transform hover:scale-[1.005] active:scale-[0.995]"
             aria-label={isShowingAfter ? "View before image" : "View after image"}
           >
             {isShowingAfter ? (

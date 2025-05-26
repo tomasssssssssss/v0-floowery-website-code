@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Instagram, Twitter, Facebook } from "@/components/Icons"
+import { Instagram } from "@/components/Icons"
 
 export function Footer() {
   return (
@@ -21,14 +21,13 @@ export function Footer() {
             </Link>
             <p className="text-[#F0F0F0] mb-4 mt-4">The #1 Instagram growth service for real, engaged followers.</p>
             <div className="flex space-x-4">
-              <a href="#" className="text-[#F0F0F0] hover:text-[#59CCB1] transition-colors">
+              <a
+                href="https://instagram.com/flooweryofficial"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#F0F0F0] hover:text-[#59CCB1] transition-colors"
+              >
                 <Instagram className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-[#F0F0F0] hover:text-[#59CCB1] transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-[#F0F0F0] hover:text-[#59CCB1] transition-colors">
-                <Facebook className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -39,11 +38,6 @@ export function Footer() {
               <li>
                 <Link href="/about" className="text-gray-300 hover:text-secondary transition-colors">
                   About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-gray-300 hover:text-secondary transition-colors">
-                  Contact
                 </Link>
               </li>
             </ul>
