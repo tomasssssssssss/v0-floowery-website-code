@@ -1,104 +1,36 @@
 "use client"
 
-import type React from "react"
-import { useEffect, useState, useCallback } from "react"
+import { useState } from "react"
 import { Instagram, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 
 export default function DashboardPage() {
   const [username, setUsername] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [showResults, setShowResults] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const [currentView, setCurrentView] = useState("input") // "input", "loading", "results"
 
-  useEffect(() => {
-    setMounted(true)
+  const handleAnalyze = () => {
+    if (!username.trim()) return
 
-    // Force scroll to top on page load/refresh
-    if (typeof window !== "undefined") {
-      // Disable scroll restoration
-      if ("scrollRestoration" in history) {
-        history.scrollRestoration = "manual"
-      }
+    setCurrentView("loading")
 
-      // Multiple scroll methods for cross-browser compatibility
-      const scrollToTop = () => {
-        window.scrollTo(0, 0)
-        document.documentElement.scrollTop = 0
-        document.body.scrollTop = 0
-      }
-
-      scrollToTop()
-
-      // Additional timeout for after hydration
-      const timer = setTimeout(scrollToTop, 100)
-      return () => clearTimeout(timer)
-    }
-  }, [])
-
-  const handleAnalyze = useCallback(
-    (e?: React.FormEvent | React.MouseEvent) => {
-      if (e) {
-        e.preventDefault()
-        e.stopPropagation()
-      }
-
-      const trimmedUsername = username.trim()
-
-      if (!trimmedUsername || isLoading) {
-        return
-      }
-
-      console.log("Starting analysis for:", trimmedUsername)
-      setIsLoading(true)
-
-      // Simulate API call with proper error handling
-      const timer = setTimeout(() => {
-        try {
-          setIsLoading(false)
-          setShowResults(true)
-          console.log("Analysis complete for:", trimmedUsername)
-        } catch (error) {
-          console.error("Analysis error:", error)
-          setIsLoading(false)
-        }
-      }, 2000)
-
-      // Cleanup function
-      return () => clearTimeout(timer)
-    },
-    [username, isLoading],
-  )
-
-  const handleBack = useCallback(() => {
-    setShowResults(false)
-    setUsername("")
-    setIsLoading(false)
-  }, [])
-
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value)
-  }, [])
-
-  // Don't render until mounted to avoid hydration issues
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
-            <div className="relative w-12 h-12">
-              <Image src="/images/floowery-spiral-icon.png" alt="Floowery" fill className="object-contain" priority />
-            </div>
-          </div>
-          <p className="text-[#59CCB1]">Loading...</p>
-        </div>
-      </div>
-    )
+    setTimeout(() => {
+      setCurrentView("results")
+    }, 2000)
   }
 
-  const canSubmit = username.trim().length > 0 && !isLoading
+  const handleBack = () => {
+    setCurrentView("input")
+    setUsername("")
+  }
 
-  if (isLoading) {
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && username.trim()) {
+      handleAnalyze()
+    }
+  }
+
+  // Loading View
+  if (currentView === "loading") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
         <div className="text-center">
@@ -124,7 +56,8 @@ export default function DashboardPage() {
     )
   }
 
-  if (showResults) {
+  // Results View
+  if (currentView === "results") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
         <div className="max-w-2xl mx-auto px-4 py-12">
@@ -132,7 +65,6 @@ export default function DashboardPage() {
             <button
               onClick={handleBack}
               className="flex items-center text-[#59CCB1] hover:text-[#4AB89E] transition-all duration-200 hover:scale-105"
-              type="button"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Back to Search
@@ -206,6 +138,7 @@ export default function DashboardPage() {
     )
   }
 
+  // Input View (Default)
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
       <div className="max-w-md mx-auto pt-20 px-4">
@@ -231,31 +164,23 @@ export default function DashboardPage() {
               <input
                 type="text"
                 value={username}
-                onChange={handleInputChange}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && canSubmit) {
-                    handleAnalyze(e)
-                  }
-                }}
+                onChange={(e) => setUsername(e.target.value)}
+                onKeyPress={handleKeyPress}
                 placeholder="Enter your Instagram username"
                 className="w-full pl-14 pr-4 py-4 border-2 border-[#59CCB1]/20 rounded-xl focus:border-[#59CCB1] focus:outline-none transition-colors text-[#160C29] text-lg"
-                autoComplete="off"
-                autoCorrect="off"
-                spellCheck="false"
               />
             </div>
 
             <button
-              type="button"
               onClick={handleAnalyze}
-              disabled={!canSubmit}
+              disabled={!username.trim()}
               className={`w-full py-4 rounded-xl font-medium transition-all text-lg ${
-                canSubmit
-                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg cursor-pointer active:scale-95"
+                username.trim()
+                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg active:scale-95 cursor-pointer"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-              {isLoading ? "Analyzing..." : "Analyze My Account"}
+              Analyze My Account
             </button>
           </div>
 
