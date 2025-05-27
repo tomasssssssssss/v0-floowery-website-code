@@ -42,14 +42,14 @@ export function Header() {
           >
             Pricing
           </Link>
-          <Link
+          <a
             href="/dashboard"
             className={`text-[#F0F0F0] hover:text-[#59CCB1] transition-colors duration-200 font-semibold ${
               isActive("/dashboard") ? "border-b-2 border-[#59CCB1]" : ""
             }`}
           >
             Dashboard
-          </Link>
+          </a>
         </nav>
 
         {/* Mobile Menu Button */}
@@ -94,13 +94,13 @@ export function Header() {
             >
               Pricing
             </Link>
-            <Link
+            <a
               href="/dashboard"
-              className={`text-[#F0F0F0] text-xl font-semibold ${isActive("/dashboard") ? "text-[#59CCB1]" : ""}`}
+              className={`text-[#F0F0F0] text-xl font-semibold hover:text-[#59CCB1] transition-colors text-left ${isActive("/dashboard") ? "text-[#59CCB1]" : ""}`}
               onClick={() => setMobileMenuOpen(false)}
             >
               Dashboard
-            </Link>
+            </a>
           </div>
         </motion.div>
       )}
