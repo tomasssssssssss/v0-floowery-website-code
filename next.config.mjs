@@ -1,11 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable experimental features for better performance
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
-  },
-
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -71,11 +65,14 @@ const nextConfig = {
   // Bundle analyzer (optional)
   ...(process.env.ANALYZE === 'true' && {
     webpack: (config) => {
-      config.plugins.push(
-        new (require('@next/bundle-analyzer'))({
+      try {
+        const BundleAnalyzerPlugin = require('@next/bundle-analyzer')({
           enabled: true,
         })
-      )
+        config.plugins.push(BundleAnalyzerPlugin)
+      } catch (error) {
+        console.warn('Bundle analyzer not available:', error.message)
+      }
       return config
     },
   }),
