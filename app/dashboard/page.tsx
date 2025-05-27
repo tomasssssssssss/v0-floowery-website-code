@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { Instagram, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 
@@ -10,8 +9,11 @@ export default function DashboardPage() {
   const [username, setUsername] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [showResults, setShowResults] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+
     // Force scroll to top on page load/refresh
     if (typeof window !== "undefined") {
       // Disable scroll restoration
@@ -19,60 +21,79 @@ export default function DashboardPage() {
         history.scrollRestoration = "manual"
       }
 
-      // Immediate scroll to top
-      window.scrollTo(0, 0)
-      document.documentElement.scrollTop = 0
-      document.body.scrollTop = 0
-
-      // Additional timeout to ensure it works after all content loads
-      const timer = setTimeout(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+      // Multiple scroll methods for cross-browser compatibility
+      const scrollToTop = () => {
+        window.scrollTo(0, 0)
         document.documentElement.scrollTop = 0
         document.body.scrollTop = 0
-      }, 100)
+      }
 
+      scrollToTop()
+
+      // Additional timeout for after hydration
+      const timer = setTimeout(scrollToTop, 100)
       return () => clearTimeout(timer)
     }
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+  const handleAnalyze = useCallback(
+    (e?: React.FormEvent | React.MouseEvent) => {
+      if (e) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
 
-    const trimmedUsername = username.trim()
-    console.log("Form submitted with username:", trimmedUsername) // Debug log
+      const trimmedUsername = username.trim()
 
-    if (trimmedUsername && !isLoading) {
+      if (!trimmedUsername || isLoading) {
+        return
+      }
+
+      console.log("Starting analysis for:", trimmedUsername)
       setIsLoading(true)
-      // Simulate API call
-      setTimeout(() => {
-        setIsLoading(false)
-        setShowResults(true)
+
+      // Simulate API call with proper error handling
+      const timer = setTimeout(() => {
+        try {
+          setIsLoading(false)
+          setShowResults(true)
+          console.log("Analysis complete for:", trimmedUsername)
+        } catch (error) {
+          console.error("Analysis error:", error)
+          setIsLoading(false)
+        }
       }, 2000)
-    }
-  }
 
-  const handleButtonClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
+      // Cleanup function
+      return () => clearTimeout(timer)
+    },
+    [username, isLoading],
+  )
 
-    const trimmedUsername = username.trim()
-    console.log("Button clicked with username:", trimmedUsername) // Debug log
-
-    if (trimmedUsername && !isLoading) {
-      setIsLoading(true)
-      // Simulate API call
-      setTimeout(() => {
-        setIsLoading(false)
-        setShowResults(true)
-      }, 2000)
-    }
-  }
-
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     setShowResults(false)
     setUsername("")
     setIsLoading(false)
+  }, [])
+
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setUsername(e.target.value)
+  }, [])
+
+  // Don't render until mounted to avoid hydration issues
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
+            <div className="relative w-12 h-12">
+              <Image src="/images/floowery-spiral-icon.png" alt="Floowery" fill className="object-contain" priority />
+            </div>
+          </div>
+          <p className="text-[#59CCB1]">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   const canSubmit = username.trim().length > 0 && !isLoading
@@ -107,20 +128,18 @@ export default function DashboardPage() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
         <div className="max-w-2xl mx-auto px-4 py-12">
-          {/* Back Button */}
           <div className="flex justify-start mb-8">
             <button
               onClick={handleBack}
               className="flex items-center text-[#59CCB1] hover:text-[#4AB89E] transition-all duration-200 hover:scale-105"
+              type="button"
             >
               <ArrowLeft className="w-5 h-5 mr-2" />
               Back to Search
             </button>
           </div>
 
-          {/* Coming Soon Card */}
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
-            {/* Logo */}
             <div className="flex justify-center mb-8">
               <div className="w-24 h-24 bg-gradient-to-br from-[#59CCB1]/10 to-[#59CCB1]/20 rounded-full flex items-center justify-center p-4 shadow-lg">
                 <div className="relative w-full h-full">
@@ -135,7 +154,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Main Content */}
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-[#160C29] mb-4">Dashboard Coming Soon! 🚀</h1>
               <p className="text-xl text-[#59CCB1] mb-2">Thanks for your interest, @{username}!</p>
@@ -144,7 +162,6 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            {/* Features Preview */}
             <div>
               <h3 className="text-xl font-bold text-[#160C29] mb-6">What's Coming:</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
@@ -166,7 +183,6 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Contact Section */}
             <div className="mt-10 pt-8 border-t border-gray-100">
               <p className="text-gray-600 mb-4">Questions? We'd love to hear from you!</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -207,7 +223,7 @@ export default function DashboardPage() {
             Get detailed insights about your Instagram growth and performance
           </p>
 
-          <form onSubmit={handleSubmit} className="mb-8">
+          <div className="mb-8">
             <div className="relative mb-6">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Instagram className="w-6 h-6 text-[#59CCB1]" />
@@ -215,27 +231,33 @@ export default function DashboardPage() {
               <input
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && canSubmit) {
+                    handleAnalyze(e)
+                  }
+                }}
                 placeholder="Enter your Instagram username"
                 className="w-full pl-14 pr-4 py-4 border-2 border-[#59CCB1]/20 rounded-xl focus:border-[#59CCB1] focus:outline-none transition-colors text-[#160C29] text-lg"
                 autoComplete="off"
-                autoFocus={false}
+                autoCorrect="off"
+                spellCheck="false"
               />
             </div>
 
             <button
               type="button"
-              onClick={handleButtonClick}
+              onClick={handleAnalyze}
               disabled={!canSubmit}
               className={`w-full py-4 rounded-xl font-medium transition-all text-lg ${
                 canSubmit
-                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg cursor-pointer"
+                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg cursor-pointer active:scale-95"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-              Analyze My Account
+              {isLoading ? "Analyzing..." : "Analyze My Account"}
             </button>
-          </form>
+          </div>
 
           <div className="bg-gradient-to-br from-[#59CCB1]/5 to-[#59CCB1]/10 rounded-xl p-6 text-left">
             <h3 className="text-[#160C29] font-bold mb-4 text-lg">What you'll get:</h3>
