@@ -16,24 +16,27 @@ export default function Home() {
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly")
 
   useEffect(() => {
-    // Prevent scroll restoration
-    if ("scrollRestoration" in history) {
-      history.scrollRestoration = "manual"
-    }
+    // Force scroll to top on page load/refresh
+    if (typeof window !== "undefined") {
+      // Disable scroll restoration
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual"
+      }
 
-    // Force immediate scroll to top
-    window.scrollTo(0, 0)
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-
-    // Additional timeout to ensure it works after all content loads
-    const timer = setTimeout(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+      // Immediate scroll to top
+      window.scrollTo(0, 0)
       document.documentElement.scrollTop = 0
       document.body.scrollTop = 0
-    }, 100)
 
-    return () => clearTimeout(timer)
+      // Additional timeout to ensure it works after all content loads
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+        document.documentElement.scrollTop = 0
+        document.body.scrollTop = 0
+      }, 100)
+
+      return () => clearTimeout(timer)
+    }
   }, [])
 
   const toggleFaq = (index: number) => {

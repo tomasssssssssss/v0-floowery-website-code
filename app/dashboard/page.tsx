@@ -12,16 +12,54 @@ export default function DashboardPage() {
   const [showResults, setShowResults] = useState(false)
 
   useEffect(() => {
+    // Force scroll to top on page load/refresh
     if (typeof window !== "undefined") {
+      // Disable scroll restoration
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual"
+      }
+
+      // Immediate scroll to top
       window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+
+      // Additional timeout to ensure it works after all content loads
+      const timer = setTimeout(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+        document.documentElement.scrollTop = 0
+        document.body.scrollTop = 0
+      }, 100)
+
+      return () => clearTimeout(timer)
     }
   }, [])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const trimmedUsername = username.trim()
+    e.stopPropagation()
 
-    if (trimmedUsername) {
+    const trimmedUsername = username.trim()
+    console.log("Form submitted with username:", trimmedUsername) // Debug log
+
+    if (trimmedUsername && !isLoading) {
+      setIsLoading(true)
+      // Simulate API call
+      setTimeout(() => {
+        setIsLoading(false)
+        setShowResults(true)
+      }, 2000)
+    }
+  }
+
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const trimmedUsername = username.trim()
+    console.log("Button clicked with username:", trimmedUsername) // Debug log
+
+    if (trimmedUsername && !isLoading) {
       setIsLoading(true)
       // Simulate API call
       setTimeout(() => {
@@ -34,9 +72,10 @@ export default function DashboardPage() {
   const handleBack = () => {
     setShowResults(false)
     setUsername("")
+    setIsLoading(false)
   }
 
-  const isButtonDisabled = !username.trim() || isLoading
+  const canSubmit = username.trim().length > 0 && !isLoading
 
   if (isLoading) {
     return (
@@ -179,21 +218,22 @@ export default function DashboardPage() {
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter your Instagram username"
                 className="w-full pl-14 pr-4 py-4 border-2 border-[#59CCB1]/20 rounded-xl focus:border-[#59CCB1] focus:outline-none transition-colors text-[#160C29] text-lg"
-                required
                 autoComplete="off"
+                autoFocus={false}
               />
             </div>
 
             <button
-              type="submit"
-              disabled={isButtonDisabled}
-              className={`w-full py-4 rounded-xl font-medium transition-all text-lg transform ${
-                isButtonDisabled
-                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
-                  : "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg"
+              type="button"
+              onClick={handleButtonClick}
+              disabled={!canSubmit}
+              className={`w-full py-4 rounded-xl font-medium transition-all text-lg ${
+                canSubmit
+                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg cursor-pointer"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
-              {isLoading ? "Analyzing..." : "Analyze My Account"}
+              Analyze My Account
             </button>
           </form>
 
