@@ -12,12 +12,16 @@ export default function DashboardPage() {
   const [showResults, setShowResults] = useState(false)
 
   useEffect(() => {
-    window.scrollTo(0, 0)
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0)
+    }
   }, [])
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (username.trim()) {
+    const trimmedUsername = username.trim()
+
+    if (trimmedUsername) {
       setIsLoading(true)
       // Simulate API call
       setTimeout(() => {
@@ -32,10 +36,12 @@ export default function DashboardPage() {
     setUsername("")
   }
 
+  const isButtonDisabled = !username.trim() || isLoading
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
-        <div className="text-center animate-in fade-in duration-500">
+        <div className="text-center">
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
             <div className="relative w-12 h-12">
               <Image
@@ -44,6 +50,7 @@ export default function DashboardPage() {
                 fill
                 className="object-contain animate-spin"
                 style={{ animationDuration: "2s" }}
+                priority
               />
             </div>
           </div>
@@ -62,7 +69,7 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
         <div className="max-w-2xl mx-auto px-4 py-12">
           {/* Back Button */}
-          <div className="flex justify-start mb-8 animate-in slide-in-from-left duration-400">
+          <div className="flex justify-start mb-8">
             <button
               onClick={handleBack}
               className="flex items-center text-[#59CCB1] hover:text-[#4AB89E] transition-all duration-200 hover:scale-105"
@@ -73,18 +80,24 @@ export default function DashboardPage() {
           </div>
 
           {/* Coming Soon Card */}
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center animate-in slide-in-from-bottom duration-600">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
             {/* Logo */}
-            <div className="flex justify-center mb-8 animate-in zoom-in duration-500 delay-200">
+            <div className="flex justify-center mb-8">
               <div className="w-24 h-24 bg-gradient-to-br from-[#59CCB1]/10 to-[#59CCB1]/20 rounded-full flex items-center justify-center p-4 shadow-lg">
                 <div className="relative w-full h-full">
-                  <Image src="/images/floowery-spiral-icon.png" alt="Floowery" fill className="object-contain" />
+                  <Image
+                    src="/images/floowery-spiral-icon.png"
+                    alt="Floowery"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
                 </div>
               </div>
             </div>
 
             {/* Main Content */}
-            <div className="animate-in slide-in-from-bottom duration-600 delay-300">
+            <div>
               <h1 className="text-3xl md:text-4xl font-bold text-[#160C29] mb-4">Dashboard Coming Soon! 🚀</h1>
               <p className="text-xl text-[#59CCB1] mb-2">Thanks for your interest, @{username}!</p>
               <p className="text-gray-600 mb-8 max-w-lg mx-auto">
@@ -93,7 +106,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Features Preview */}
-            <div className="animate-in slide-in-from-bottom duration-600 delay-400">
+            <div>
               <h3 className="text-xl font-bold text-[#160C29] mb-6">What's Coming:</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                 {[
@@ -115,7 +128,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Contact Section */}
-            <div className="mt-10 pt-8 border-t border-gray-100 animate-in slide-in-from-bottom duration-600 delay-500">
+            <div className="mt-10 pt-8 border-t border-gray-100">
               <p className="text-gray-600 mb-4">Questions? We'd love to hear from you!</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <a
@@ -141,15 +154,15 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
       <div className="max-w-md mx-auto pt-20 px-4">
-        <div className="flex justify-center mb-8 animate-in zoom-in duration-500">
+        <div className="flex justify-center mb-8">
           <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center p-3 shadow-xl hover:shadow-2xl transition-all duration-300">
             <div className="relative w-full h-full">
-              <Image src="/images/floowery-spiral-icon.png" alt="Floowery" fill className="object-contain" />
+              <Image src="/images/floowery-spiral-icon.png" alt="Floowery" fill className="object-contain" priority />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 text-center animate-in slide-in-from-bottom duration-600">
+        <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
           <h1 className="text-3xl font-bold text-[#160C29] mb-4">Instagram Analytics Dashboard</h1>
           <p className="text-[#59CCB1] text-lg mb-8">
             Get detailed insights about your Instagram growth and performance
@@ -167,15 +180,20 @@ export default function DashboardPage() {
                 placeholder="Enter your Instagram username"
                 className="w-full pl-14 pr-4 py-4 border-2 border-[#59CCB1]/20 rounded-xl focus:border-[#59CCB1] focus:outline-none transition-colors text-[#160C29] text-lg"
                 required
+                autoComplete="off"
               />
             </div>
 
             <button
               type="submit"
-              disabled={!username.trim()}
-              className="w-full bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] disabled:from-gray-400 disabled:to-gray-400 text-white py-4 rounded-xl font-medium transition-all text-lg hover:scale-105 hover:shadow-lg transform"
+              disabled={isButtonDisabled}
+              className={`w-full py-4 rounded-xl font-medium transition-all text-lg transform ${
+                isButtonDisabled
+                  ? "bg-gray-400 text-gray-600 cursor-not-allowed"
+                  : "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg"
+              }`}
             >
-              Analyze My Account
+              {isLoading ? "Analyzing..." : "Analyze My Account"}
             </button>
           </form>
 
