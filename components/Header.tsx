@@ -20,7 +20,7 @@ export function Header() {
       <div className="container mx-auto px-1 py-0.5 flex items-center justify-between">
         <div className="flex-shrink-0 mr-6">
           <Link href="/" className="flex items-center">
-            <Logo variant="dark" size="sm" linkWrapper={false} />
+            <Logo variant="dark" size="md" linkWrapper={false} />
           </Link>
         </div>
 

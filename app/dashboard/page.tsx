@@ -9,10 +9,11 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true)
-    // Force scroll to top
-    window.scrollTo(0, 0)
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
+    if (typeof window !== "undefined") {
+      window.scrollTo(0, 0)
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
+    }
   }, [])
 
   const handleAnalyze = () => {
@@ -56,12 +57,12 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
-            <img
-              src="/images/floowery-spiral-icon.png"
-              alt="Floowery"
-              className="w-12 h-12 object-contain animate-spin"
+            <div
+              className="w-12 h-12 bg-[#59CCB1] rounded-full animate-spin flex items-center justify-center"
               style={{ animationDuration: "2s" }}
-            />
+            >
+              <div className="w-6 h-6 bg-white rounded-full"></div>
+            </div>
           </div>
           <h2 className="text-2xl font-semibold text-[#160C29] mb-3">Analyzing @{username}</h2>
           <p className="text-[#59CCB1] mb-4">Fetching your Instagram data...</p>
@@ -92,7 +93,12 @@ export default function DashboardPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
             <div className="flex justify-center mb-8">
               <div className="w-24 h-24 bg-gradient-to-br from-[#59CCB1]/10 to-[#59CCB1]/20 rounded-full flex items-center justify-center p-4 shadow-lg">
-                <img src="/images/floowery-spiral-icon.png" alt="Floowery" className="w-full h-full object-contain" />
+                <img
+                  src="/images/floowery-spiral-icon.png"
+                  alt="Floowery"
+                  className="w-full h-full object-contain animate-spin"
+                  style={{ animationDuration: "2s" }}
+                />
               </div>
             </div>
 
@@ -152,7 +158,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
       <div className="max-w-md mx-auto pt-20 px-4">
         <div className="flex justify-center mb-8">
-          <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110">
+          <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 bg-white">
             <div className="relative w-full h-full">
               <img
                 src="/images/floowery-spiral-icon.png"
