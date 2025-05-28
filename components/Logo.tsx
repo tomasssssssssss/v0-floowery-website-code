@@ -41,26 +41,26 @@ export function Logo({ variant = "light", size = "md", linkWrapper = true, iconO
     if (iconOnly) {
       switch (size) {
         case "sm":
-          return { width: 24, height: 24 }
+          return { width: 18, height: 18 }
         case "lg":
-          return { width: 40, height: 40 }
+          return { width: 30, height: 30 }
         case "xl":
-          return { width: 48, height: 48 }
+          return { width: 36, height: 36 }
         case "md":
         default:
-          return { width: 32, height: 32 }
+          return { width: 24, height: 24 }
       }
     } else {
       switch (size) {
         case "sm":
-          return { width: 120, height: 36 }
+          return { width: 90, height: 27 }
         case "lg":
-          return { width: 180, height: 54 }
+          return { width: 135, height: 40 }
         case "xl":
-          return { width: 220, height: 66 }
+          return { width: 165, height: 50 }
         case "md":
         default:
-          return { width: 150, height: 45 }
+          return { width: 110, height: 33 }
       }
     }
   }
