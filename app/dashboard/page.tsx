@@ -1,37 +1,41 @@
 "use client"
 
 import type React from "react"
-
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 
-export default function DashboardPage() {
+const Dashboard = () => {
   const [username, setUsername] = useState("")
-  const [currentView, setCurrentView] = useState("input")
-  const [mounted, setMounted] = useState(false)
+  const [analysisResults, setAnalysisResults] = useState<any>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [view, setView] = useState<"input" | "results">("input")
 
-  useEffect(() => {
-    setMounted(true)
-    // Force scroll to top
-    window.scrollTo(0, 0)
-    document.documentElement.scrollTop = 0
-    document.body.scrollTop = 0
-  }, [])
+  const handleAnalyze = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username }),
+      })
 
-  const handleAnalyze = () => {
-    const trimmedUsername = username.trim()
-    if (!trimmedUsername) return
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to analyze user")
+      }
 
-    setCurrentView("loading")
-
-    setTimeout(() => {
-      setCurrentView("results")
-    }, 2000)
-  }
-
-  const handleBack = () => {
-    setCurrentView("input")
-    setUsername("")
+      const data = await response.json()
+      setAnalysisResults(data)
+      setView("results")
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred")
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -41,204 +45,82 @@ export default function DashboardPage() {
     }
   }
 
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
-            <div className="w-12 h-12 bg-[#59CCB1]/20 rounded-full"></div>
-          </div>
-          <p className="text-[#59CCB1]">Loading...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (currentView === "loading") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
-            <Image
-              src="/images/floowery-spiral-icon.png"
-              alt="Floowery"
-              width={48}
-              height={48}
-              className="object-contain animate-spin"
-              style={{ animationDuration: "2s" }}
-            />
-          </div>
-          <h2 className="text-2xl font-semibold text-[#160C29] mb-3">Analyzing @{username}</h2>
-          <p className="text-[#59CCB1] mb-4">Fetching your Instagram data...</p>
-          <div className="w-64 bg-gray-200 rounded-full h-2 mx-auto">
-            <div className="bg-[#59CCB1] h-2 rounded-full animate-pulse" style={{ width: "60%" }}></div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (currentView === "results") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
-        <div className="max-w-2xl mx-auto px-4 py-12">
-          <div className="flex justify-start mb-8">
-            <button
-              onClick={handleBack}
-              className="flex items-center text-[#59CCB1] hover:text-[#4AB89E] transition-all duration-200 hover:scale-105"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Back to Search
-            </button>
-          </div>
-
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
-            <div className="flex justify-center mb-8">
-              <div className="w-24 h-24 bg-gradient-to-br from-[#59CCB1]/10 to-[#59CCB1]/20 rounded-full flex items-center justify-center p-4 shadow-lg">
-                <Image
-                  src="/images/floowery-spiral-icon.png"
-                  alt="Floowery"
-                  width={48}
-                  height={48}
-                  className="object-contain animate-spin"
-                  style={{ animationDuration: "2s" }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-[#160C29] mb-4">Dashboard Coming Soon! 🚀</h1>
-              <p className="text-xl text-[#59CCB1] mb-2">Thanks for your interest, @{username}!</p>
-              <p className="text-gray-600 mb-8 max-w-lg mx-auto">
-                We're working hard to bring you the most comprehensive Instagram analytics dashboard.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold text-[#160C29] mb-6">What's Coming:</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                {[
-                  "📊 Real-time follower analytics",
-                  "📈 Growth trend predictions",
-                  "🌍 Geographic audience insights",
-                  "💡 Personalized growth tips",
-                  "📱 Mobile-optimized interface",
-                  "🔔 Growth milestone notifications",
-                ].map((feature, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <span className="text-sm font-medium text-[#160C29]">{feature}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-10 pt-8 border-t border-gray-100">
-              <p className="text-gray-600 mb-4">Questions? We'd love to hear from you!</p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <a
-                  href="mailto:support@floowery.com"
-                  className="inline-flex items-center justify-center bg-white border border-[#59CCB1] text-[#59CCB1] px-6 py-3 rounded-xl font-medium hover:bg-[#59CCB1] hover:text-white transition-all duration-200"
-                >
-                  📧 support@floowery.com
-                </a>
-                <a
-                  href="/pricing"
-                  className="inline-flex items-center justify-center bg-[#59CCB1] text-white px-6 py-3 rounded-xl font-medium hover:bg-[#4AB89E] transition-all duration-200"
-                >
-                  View Growth Plans
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
+  const handleBack = () => {
+    setView("input")
+    setAnalysisResults(null)
+    setUsername("")
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
-      <div className="max-w-md mx-auto pt-20 px-4">
-        <div className="flex justify-center mb-8">
-          <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110">
-            <div className="relative w-full h-full">
+    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 py-10">
+      <div className="mb-8">
+        <Image
+          src="/images/floowery-spiral-icon.png"
+          alt="Floowery"
+          width={48}
+          height={48}
+          className="object-contain animate-spin"
+          style={{ animationDuration: "2s" }}
+        />
+      </div>
+
+      {view === "input" ? (
+        <div className="bg-white shadow-md rounded-lg p-8 flex flex-col items-center w-full max-w-md">
+          <Image
+            src="/images/floowery-spiral-icon.png"
+            alt="Floowery"
+            width={112}
+            height={112}
+            className="object-contain drop-shadow-lg hover:drop-shadow-xl transition-all duration-300"
+          />
+          <h1 className="text-2xl font-semibold text-gray-800 mb-6">Enter a Twitter Username</h1>
+          <input
+            type="text"
+            placeholder="e.g., @elonmusk"
+            className="border border-gray-300 rounded-md p-3 w-full text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-300"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            onKeyDown={handleKeyDown}
+            disabled={isLoading}
+          />
+          <button
+            onClick={handleAnalyze}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md mt-4 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={isLoading || !username.trim()}
+          >
+            {isLoading ? "Analyzing..." : "Analyze"}
+          </button>
+          {error && <p className="text-red-500 mt-4">{error}</p>}
+        </div>
+      ) : (
+        <div className="bg-white shadow-md rounded-lg p-8 flex flex-col items-center w-full max-w-md">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Analysis Results for @{username}</h2>
+          {analysisResults ? (
+            <>
               <Image
                 src="/images/floowery-spiral-icon.png"
                 alt="Floowery"
-                width={96}
-                height={96}
-                className="object-contain drop-shadow-lg hover:drop-shadow-xl transition-all duration-300"
+                width={48}
+                height={48}
+                className="object-contain"
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-[#59CCB1]/10 to-transparent rounded-full"></div>
-            </div>
-          </div>
+              <p className="text-gray-700 mt-2">Follower Count: {analysisResults.follower_count}</p>
+              <p className="text-gray-700 mt-2">Average Engagement: {analysisResults.average_engagement}</p>
+              {/* Display other analysis results here */}
+            </>
+          ) : (
+            <p className="text-gray-700">No results to display.</p>
+          )}
+          <button
+            onClick={handleBack}
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md mt-6 transition-all duration-300"
+          >
+            Back to Input
+          </button>
         </div>
-
-        <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-          <h1 className="text-3xl font-bold text-[#160C29] mb-4">Instagram Analytics Dashboard</h1>
-          <p className="text-[#59CCB1] text-lg mb-8">
-            Get detailed insights about your Instagram growth and performance
-          </p>
-
-          <div className="mb-8">
-            <div className="relative mb-6">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg className="w-6 h-6 text-[#59CCB1]" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                </svg>
-              </div>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Enter your Instagram username"
-                className="w-full pl-14 pr-4 py-4 border-2 border-[#59CCB1]/20 rounded-xl focus:border-[#59CCB1] focus:outline-none transition-colors text-[#160C29] text-lg"
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck="false"
-              />
-            </div>
-
-            <button
-              onClick={handleAnalyze}
-              disabled={!username.trim()}
-              className={`w-full py-4 rounded-xl font-medium transition-all text-lg ${
-                username.trim()
-                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg active:scale-95 cursor-pointer"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-            >
-              Analyze My Account
-            </button>
-          </div>
-
-          <div className="bg-gradient-to-br from-[#59CCB1]/5 to-[#59CCB1]/10 rounded-xl p-6 text-left">
-            <h3 className="text-[#160C29] font-bold mb-4 text-lg">What you'll get:</h3>
-            <div className="space-y-3">
-              {[
-                "Detailed follower growth analytics",
-                "Engagement rate analysis",
-                "Geographic follower breakdown",
-                "Growth trend predictions",
-                "Personalized growth recommendations",
-              ].map((feature, index) => (
-                <div key={index} className="flex items-start">
-                  <div className="w-6 h-6 rounded-full bg-[#59CCB1] flex items-center justify-center mr-3 mt-0.5">
-                    <div className="w-2 h-2 bg-white rounded-full"></div>
-                  </div>
-                  <span className="text-[#160C29] font-medium">{feature}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   )
 }
+
+export default Dashboard

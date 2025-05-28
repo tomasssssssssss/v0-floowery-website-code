@@ -95,7 +95,7 @@ export default function EnhancedReviews() {
       text: "This is my second time using Floowery and I'm just as impressed as the first time. My online store has seen a 65% increase in traffic from Instagram since I started using their service. The ROI is incredible!",
       author: "James Peterson",
       handle: "@jamespcrafts",
-      image: "/musician-profile.png",
+      image: "/abstract-profile.png",
       rating: 5,
       date: "1 month ago",
       category: "business",

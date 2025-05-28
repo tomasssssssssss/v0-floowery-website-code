@@ -10,11 +10,7 @@ export const metadata: Metadata = {
   generator: "v0.dev",
   keywords: "Instagram, analytics, growth, followers, social media",
   authors: [{ name: "Floowery" }],
-}
-
-export const viewport = {
-  width: "device-width",
-  initialScale: 1,
+  viewport: "width=device-width, initial-scale=1",
 }
 
 export default function RootLayout({

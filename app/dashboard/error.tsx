@@ -11,14 +11,14 @@ export default function Error({
   reset: () => void
 }) {
   useEffect(() => {
-    console.error(error)
+    console.error("Dashboard error:", error)
   }, [error])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
       <div className="max-w-md mx-auto px-4 text-center">
         <div className="flex justify-center mb-8">
-          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center p-4 shadow-lg">
+          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center p-3 shadow-sm">
             <Image
               src="/images/floowery-spiral-icon.png"
               alt="Floowery"
@@ -29,8 +29,8 @@ export default function Error({
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-[#160C29] mb-4">Oops! Something went wrong</h2>
+        <div className="bg-white rounded-2xl shadow-sm p-8">
+          <h1 className="text-2xl font-bold text-[#160C29] mb-4">Oops! Something went wrong</h1>
           <p className="text-gray-600 mb-6">We're having trouble loading your dashboard. Please try again.</p>
 
           <div className="space-y-3">
@@ -50,9 +50,9 @@ export default function Error({
           </div>
 
           <div className="mt-6 pt-6 border-t border-gray-100">
-            <p className="text-sm text-gray-500 mb-2">Need help?</p>
+            <p className="text-sm text-gray-500 mb-3">Need help?</p>
             <a href="mailto:support@floowery.com" className="text-[#59CCB1] hover:text-[#4AB89E] font-medium">
-              Contact Support
+              📧 support@floowery.com
             </a>
           </div>
         </div>
