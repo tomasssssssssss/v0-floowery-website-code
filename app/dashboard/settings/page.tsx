@@ -15,13 +15,11 @@ export default function Settings() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-
       <main className="max-w-4xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-2xl font-bold">Account Settings</h1>
           <p className="text-gray-600">Manage your tracking preferences and account settings</p>
         </div>
-
         <div className="space-y-6">
           <Card>
             <CardHeader>
@@ -43,10 +41,9 @@ export default function Settings() {
                 <Label htmlFor="company">Company</Label>
                 <Input id="company" placeholder="Company name" defaultValue="Floowery" />
               </div>
-              <Button className="bg-[#59CCB1] hover:bg-[#2A1845] text-white">Save Changes</Button>
+              <Button className="bg-green-600 hover:bg-green-700 text-white">Save Changes</Button>
             </CardContent>
           </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>Tracking Settings</CardTitle>
@@ -58,42 +55,35 @@ export default function Settings() {
                   <h3 className="text-sm font-medium">Automatic Daily Tracking</h3>
                   <p className="text-sm text-gray-500">Automatically track follower counts daily</p>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={dailyReportsEnabled}
-                    onChange={() => setDailyReportsEnabled(!dailyReportsEnabled)}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#F0E6FF] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#59CCB1]"></div>
-                </label>
+                <input
+                  type="checkbox"
+                  checked={dailyReportsEnabled}
+                  onChange={(e) => setDailyReportsEnabled(e.target.checked)}
+                  className="h-4 w-4"
+                />
               </div>
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-medium">Growth Notifications</h3>
                   <p className="text-sm text-gray-500">Receive notifications about significant follower changes</p>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    checked={notificationsEnabled}
-                    onChange={() => setNotificationsEnabled(!notificationsEnabled)}
-                  />
-                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#F0E6FF] rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#59CCB1]"></div>
-                </label>
+                <input
+                  type="checkbox"
+                  checked={notificationsEnabled}
+                  onChange={(e) => setNotificationsEnabled(e.target.checked)}
+                  className="h-4 w-4"
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="threshold">Growth Notification Threshold (%)</Label>
                 <Input id="threshold" type="number" placeholder="5" defaultValue="5" disabled={!notificationsEnabled} />
                 <p className="text-xs text-gray-500">
-                  You'll be notified when an account's followers change by this percentage
+                  You will be notified when an account followers change by this percentage
                 </p>
               </div>
-              <Button className="bg-[#59CCB1] hover:bg-[#2A1845] text-white">Save Settings</Button>
+              <Button className="bg-green-600 hover:bg-green-700 text-white">Save Settings</Button>
             </CardContent>
           </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>API Access</CardTitle>
@@ -103,20 +93,14 @@ export default function Settings() {
               <div className="space-y-2">
                 <Label htmlFor="api-key">API Key</Label>
                 <div className="flex">
-                  <Input
-                    id="api-key"
-                    type="password"
-                    value="••••••••••••••••••••••••••••••"
-                    readOnly
-                    className="rounded-r-none"
-                  />
+                  <Input id="api-key" type="password" value="sk-1234567890abcdef" readOnly className="rounded-r-none" />
                   <Button variant="outline" className="rounded-l-none border-l-0">
                     Show
                   </Button>
                 </div>
               </div>
               <div className="flex space-x-2">
-                <Button variant="outline" className="border-[#59CCB1] text-[#59CCB1] hover:bg-[#F0E6FF]">
+                <Button variant="outline" className="border-green-600 text-green-600 hover:bg-green-50">
                   Regenerate Key
                 </Button>
                 <Button variant="outline">Copy Key</Button>
@@ -125,7 +109,6 @@ export default function Settings() {
           </Card>
         </div>
       </main>
-
       <Footer />
     </div>
   )
