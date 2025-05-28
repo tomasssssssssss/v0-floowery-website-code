@@ -22,8 +22,21 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Force scroll to top immediately
+              if (typeof window !== 'undefined') {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+                if ('scrollRestoration' in history) {
+                  history.scrollRestoration = 'manual';
+                }
+              }
+            `,
+          }}
+        />
       </head>
       <body>
         <ScrollToTop />

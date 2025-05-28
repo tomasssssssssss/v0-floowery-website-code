@@ -1,39 +1,43 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Instagram, ArrowLeft } from "lucide-react"
-import Image from "next/image"
 
 export default function DashboardPage() {
   const [username, setUsername] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [showResults, setShowResults] = useState(false)
+  const [currentView, setCurrentView] = useState("input")
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    // Ensure page starts at top
+    // Force scroll to top
     window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
   }, [])
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    if (username.trim()) {
-      setIsLoading(true)
-      setTimeout(() => {
-        setIsLoading(false)
-        setShowResults(true)
-      }, 2000)
-    }
+  const handleAnalyze = () => {
+    const trimmedUsername = username.trim()
+    if (!trimmedUsername) return
+
+    setCurrentView("loading")
+
+    setTimeout(() => {
+      setCurrentView("results")
+    }, 2000)
   }
 
   const handleBack = () => {
-    setShowResults(false)
+    setCurrentView("input")
     setUsername("")
-    setIsLoading(false)
   }
 
-  // Prevent hydration issues
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && username.trim()) {
+      e.preventDefault()
+      handleAnalyze()
+    }
+  }
+
   if (!mounted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
@@ -47,22 +51,17 @@ export default function DashboardPage() {
     )
   }
 
-  if (isLoading) {
+  if (currentView === "loading") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
-            <div className="relative w-12 h-12">
-              <Image
-                src="/images/floowery-spiral-icon.png"
-                alt="Floowery"
-                fill
-                className="object-contain animate-spin"
-                style={{ animationDuration: "2s" }}
-                priority
-                unoptimized
-              />
-            </div>
+            <img
+              src="/images/floowery-spiral-icon.png"
+              alt="Floowery"
+              className="w-12 h-12 object-contain animate-spin"
+              style={{ animationDuration: "2s" }}
+            />
           </div>
           <h2 className="text-2xl font-semibold text-[#160C29] mb-3">Analyzing @{username}</h2>
           <p className="text-[#59CCB1] mb-4">Fetching your Instagram data...</p>
@@ -74,7 +73,7 @@ export default function DashboardPage() {
     )
   }
 
-  if (showResults) {
+  if (currentView === "results") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
         <div className="max-w-2xl mx-auto px-4 py-12">
@@ -83,7 +82,9 @@ export default function DashboardPage() {
               onClick={handleBack}
               className="flex items-center text-[#59CCB1] hover:text-[#4AB89E] transition-all duration-200 hover:scale-105"
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
               Back to Search
             </button>
           </div>
@@ -91,16 +92,7 @@ export default function DashboardPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
             <div className="flex justify-center mb-8">
               <div className="w-24 h-24 bg-gradient-to-br from-[#59CCB1]/10 to-[#59CCB1]/20 rounded-full flex items-center justify-center p-4 shadow-lg">
-                <div className="relative w-full h-full">
-                  <Image
-                    src="/images/floowery-spiral-icon.png"
-                    alt="Floowery"
-                    fill
-                    className="object-contain"
-                    priority
-                    unoptimized
-                  />
-                </div>
+                <img src="/images/floowery-spiral-icon.png" alt="Floowery" className="w-full h-full object-contain" />
               </div>
             </div>
 
@@ -160,16 +152,14 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
       <div className="max-w-md mx-auto pt-20 px-4">
         <div className="flex justify-center mb-8">
-          <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center p-3 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110">
             <div className="relative w-full h-full">
-              <Image
+              <img
                 src="/images/floowery-spiral-icon.png"
                 alt="Floowery"
-                fill
-                className="object-contain"
-                priority
-                unoptimized
+                className="w-full h-full object-contain drop-shadow-lg hover:drop-shadow-xl transition-all duration-300"
               />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#59CCB1]/10 to-transparent rounded-full"></div>
             </div>
           </div>
         </div>
@@ -180,18 +170,20 @@ export default function DashboardPage() {
             Get detailed insights about your Instagram growth and performance
           </p>
 
-          <form onSubmit={handleSubmit} className="mb-8">
+          <div className="mb-8">
             <div className="relative mb-6">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Instagram className="w-6 h-6 text-[#59CCB1]" />
+                <svg className="w-6 h-6 text-[#59CCB1]" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                </svg>
               </div>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="Enter your Instagram username"
                 className="w-full pl-14 pr-4 py-4 border-2 border-[#59CCB1]/20 rounded-xl focus:border-[#59CCB1] focus:outline-none transition-colors text-[#160C29] text-lg"
-                required
                 autoComplete="off"
                 autoCorrect="off"
                 autoCapitalize="off"
@@ -200,17 +192,17 @@ export default function DashboardPage() {
             </div>
 
             <button
-              type="submit"
+              onClick={handleAnalyze}
               disabled={!username.trim()}
               className={`w-full py-4 rounded-xl font-medium transition-all text-lg ${
                 username.trim()
-                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg active:scale-95"
+                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg active:scale-95 cursor-pointer"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
               Analyze My Account
             </button>
-          </form>
+          </div>
 
           <div className="bg-gradient-to-br from-[#59CCB1]/5 to-[#59CCB1]/10 rounded-xl p-6 text-left">
             <h3 className="text-[#160C29] font-bold mb-4 text-lg">What you'll get:</h3>

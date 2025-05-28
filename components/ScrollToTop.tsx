@@ -7,42 +7,51 @@ export default function ScrollToTop() {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Multiple methods to ensure scroll to top works
-    const scrollToTop = () => {
-      try {
-        // Method 1: Standard scroll
-        window.scrollTo(0, 0)
+    // Force scroll to top with multiple methods
+    const forceScrollToTop = () => {
+      // Disable smooth scrolling temporarily
+      document.documentElement.style.scrollBehavior = "auto"
+      document.body.style.scrollBehavior = "auto"
 
-        // Method 2: Smooth scroll
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+      // Multiple scroll methods
+      window.scrollTo(0, 0)
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" })
+      document.documentElement.scrollTop = 0
+      document.body.scrollTop = 0
 
-        // Method 3: Document element scroll
-        if (document.documentElement) {
-          document.documentElement.scrollTop = 0
-        }
-
-        // Method 4: Body scroll
-        if (document.body) {
-          document.body.scrollTop = 0
-        }
-      } catch (error) {
-        console.warn("Scroll to top failed:", error)
-      }
+      // Re-enable smooth scrolling after a delay
+      setTimeout(() => {
+        document.documentElement.style.scrollBehavior = ""
+        document.body.style.scrollBehavior = ""
+      }, 100)
     }
 
     // Immediate scroll
-    scrollToTop()
+    forceScrollToTop()
 
-    // Delayed scroll for safety
-    const timeoutId = setTimeout(scrollToTop, 100)
-
-    return () => clearTimeout(timeoutId)
+    // Multiple delayed attempts
+    setTimeout(forceScrollToTop, 0)
+    setTimeout(forceScrollToTop, 50)
+    setTimeout(forceScrollToTop, 100)
+    setTimeout(forceScrollToTop, 200)
   }, [pathname])
 
   useEffect(() => {
-    // Disable scroll restoration
-    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
-      window.history.scrollRestoration = "manual"
+    // Disable browser scroll restoration
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual"
+      }
+
+      // Force scroll on page load
+      window.addEventListener("load", () => {
+        window.scrollTo(0, 0)
+      })
+
+      // Force scroll on beforeunload
+      window.addEventListener("beforeunload", () => {
+        window.scrollTo(0, 0)
+      })
     }
   }, [])
 
