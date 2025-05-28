@@ -1,32 +1,21 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 
 export default function DashboardPage() {
   const [username, setUsername] = useState("")
   const [currentView, setCurrentView] = useState("input")
-  const [mounted, setMounted] = useState(false)
-  const [imageError, setImageError] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   useEffect(() => {
-    setMounted(true)
-    // Force scroll to top on mount
-    setTimeout(() => {
-      if (typeof window !== "undefined") {
-        window.scrollTo({ top: 0, behavior: "smooth" })
-      }
-    }, 100)
+    setIsClient(true)
   }, [])
 
   const handleAnalyze = () => {
-    const trimmedUsername = username.trim()
-    if (!trimmedUsername) return
-
+    const trimmed = username.trim()
+    if (!trimmed) return
     setCurrentView("loading")
-
-    // Simulate API call
     setTimeout(() => {
       setCurrentView("results")
     }, 2000)
@@ -37,42 +26,26 @@ export default function DashboardPage() {
     setUsername("")
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && username.trim()) {
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
       e.preventDefault()
-      handleAnalyze()
+      const trimmed = username.trim()
+      if (trimmed) {
+        handleAnalyze()
+      }
     }
   }
 
-  const handleImageError = () => {
-    setImageError(true)
-  }
+  const LogoFallback = ({ size = "w-16 h-16", animate = false }) => (
+    <div
+      className={`${size} bg-[#59CCB1] rounded-full flex items-center justify-center ${animate ? "animate-spin" : ""}`}
+      style={animate ? { animationDuration: "2s" } : {}}
+    >
+      <div className="w-1/2 h-1/2 bg-white rounded-full"></div>
+    </div>
+  )
 
-  // Logo component with fallback
-  const LogoComponent = ({ className = "", animate = false }: { className?: string; animate?: boolean }) => {
-    if (imageError) {
-      return (
-        <div
-          className={`bg-gradient-to-br from-[#59CCB1] to-[#4AB89E] rounded-full flex items-center justify-center ${className} ${animate ? "animate-spin" : ""}`}
-        >
-          <div className="w-1/2 h-1/2 bg-white rounded-full"></div>
-        </div>
-      )
-    }
-
-    return (
-      <img
-        src="/images/floowery-spiral-icon.png"
-        alt="Floowery"
-        className={`object-contain ${className} ${animate ? "animate-spin" : ""}`}
-        onError={handleImageError}
-        style={animate ? { animationDuration: "2s" } : {}}
-      />
-    )
-  }
-
-  // Loading state
-  if (!mounted) {
+  if (!isClient) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
         <div className="text-center">
@@ -85,13 +58,12 @@ export default function DashboardPage() {
     )
   }
 
-  // Loading analysis state
   if (currentView === "loading") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-4">
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
-            <LogoComponent className="w-12 h-12" animate={true} />
+            <LogoFallback size="w-12 h-12" animate={true} />
           </div>
           <h2 className="text-2xl font-semibold text-[#160C29] mb-3">Analyzing @{username}</h2>
           <p className="text-[#59CCB1] mb-6">Fetching your Instagram data...</p>
@@ -107,7 +79,6 @@ export default function DashboardPage() {
     )
   }
 
-  // Results state
   if (currentView === "results") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
@@ -115,6 +86,7 @@ export default function DashboardPage() {
           <div className="flex justify-start mb-8">
             <button
               onClick={handleBack}
+              type="button"
               className="flex items-center text-[#59CCB1] hover:text-[#4AB89E] transition-all duration-200 hover:scale-105 font-medium"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +99,7 @@ export default function DashboardPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-12 text-center">
             <div className="flex justify-center mb-8">
               <div className="w-24 h-24 bg-gradient-to-br from-[#59CCB1]/10 to-[#59CCB1]/20 rounded-full flex items-center justify-center p-4 shadow-lg">
-                <LogoComponent className="w-16 h-16" />
+                <LogoFallback size="w-16 h-16" animate={true} />
               </div>
             </div>
 
@@ -183,13 +155,15 @@ export default function DashboardPage() {
     )
   }
 
-  // Main input state
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
       <div className="max-w-md mx-auto pt-16 md:pt-20 px-4">
         <div className="flex justify-center mb-8">
           <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 bg-white">
-            <LogoComponent className="w-20 h-20 drop-shadow-lg hover:drop-shadow-xl transition-all duration-300" />
+            <div className="relative w-full h-full">
+              <div className="w-16 h-16 bg-[#59CCB1] rounded-full mx-auto"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#59CCB1]/10 to-transparent rounded-full"></div>
+            </div>
           </div>
         </div>
 
@@ -210,7 +184,7 @@ export default function DashboardPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={handleKeyPress}
                 placeholder="Enter your Instagram username"
                 className="w-full pl-14 pr-4 py-4 border-2 border-[#59CCB1]/20 rounded-xl focus:border-[#59CCB1] focus:outline-none transition-colors text-[#160C29] text-lg"
                 autoComplete="off"
@@ -223,6 +197,7 @@ export default function DashboardPage() {
             <button
               onClick={handleAnalyze}
               disabled={!username.trim()}
+              type="button"
               className={`w-full py-4 rounded-xl font-medium transition-all text-lg ${
                 username.trim()
                   ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg active:scale-95 cursor-pointer"
