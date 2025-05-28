@@ -1,19 +1,23 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 
 export default function DashboardPage() {
   const [username, setUsername] = useState("")
   const [currentView, setCurrentView] = useState("input")
   const [mounted, setMounted] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0)
-      document.documentElement.scrollTop = 0
-      document.body.scrollTop = 0
-    }
+    // Force scroll to top on mount
+    setTimeout(() => {
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }
+    }, 100)
   }, [])
 
   const handleAnalyze = () => {
@@ -22,6 +26,7 @@ export default function DashboardPage() {
 
     setCurrentView("loading")
 
+    // Simulate API call
     setTimeout(() => {
       setCurrentView("results")
     }, 2000)
@@ -32,13 +37,41 @@ export default function DashboardPage() {
     setUsername("")
   }
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && username.trim()) {
       e.preventDefault()
       handleAnalyze()
     }
   }
 
+  const handleImageError = () => {
+    setImageError(true)
+  }
+
+  // Logo component with fallback
+  const LogoComponent = ({ className = "", animate = false }: { className?: string; animate?: boolean }) => {
+    if (imageError) {
+      return (
+        <div
+          className={`bg-gradient-to-br from-[#59CCB1] to-[#4AB89E] rounded-full flex items-center justify-center ${className} ${animate ? "animate-spin" : ""}`}
+        >
+          <div className="w-1/2 h-1/2 bg-white rounded-full"></div>
+        </div>
+      )
+    }
+
+    return (
+      <img
+        src="/images/floowery-spiral-icon.png"
+        alt="Floowery"
+        className={`object-contain ${className} ${animate ? "animate-spin" : ""}`}
+        onError={handleImageError}
+        style={animate ? { animationDuration: "2s" } : {}}
+      />
+    )
+  }
+
+  // Loading state
   if (!mounted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
@@ -46,42 +79,43 @@ export default function DashboardPage() {
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
             <div className="w-12 h-12 bg-[#59CCB1]/20 rounded-full"></div>
           </div>
-          <p className="text-[#59CCB1]">Loading...</p>
+          <p className="text-[#59CCB1] font-medium">Loading Dashboard...</p>
         </div>
       </div>
     )
   }
 
+  // Loading analysis state
   if (currentView === "loading") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
-            <div
-              className="w-12 h-12 bg-[#59CCB1] rounded-full animate-spin flex items-center justify-center"
-              style={{ animationDuration: "2s" }}
-            >
-              <div className="w-6 h-6 bg-white rounded-full"></div>
-            </div>
+        <div className="text-center max-w-md mx-auto px-4">
+          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl">
+            <LogoComponent className="w-12 h-12" animate={true} />
           </div>
           <h2 className="text-2xl font-semibold text-[#160C29] mb-3">Analyzing @{username}</h2>
-          <p className="text-[#59CCB1] mb-4">Fetching your Instagram data...</p>
+          <p className="text-[#59CCB1] mb-6">Fetching your Instagram data...</p>
           <div className="w-64 bg-gray-200 rounded-full h-2 mx-auto">
-            <div className="bg-[#59CCB1] h-2 rounded-full animate-pulse" style={{ width: "60%" }}></div>
+            <div
+              className="bg-gradient-to-r from-[#59CCB1] to-[#4AB89E] h-2 rounded-full transition-all duration-1000"
+              style={{ width: "75%" }}
+            ></div>
           </div>
+          <p className="text-sm text-gray-500 mt-4">This may take a few moments...</p>
         </div>
       </div>
     )
   }
 
+  // Results state
   if (currentView === "results") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
-        <div className="max-w-2xl mx-auto px-4 py-12">
+        <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
           <div className="flex justify-start mb-8">
             <button
               onClick={handleBack}
-              className="flex items-center text-[#59CCB1] hover:text-[#4AB89E] transition-all duration-200 hover:scale-105"
+              className="flex items-center text-[#59CCB1] hover:text-[#4AB89E] transition-all duration-200 hover:scale-105 font-medium"
             >
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -90,19 +124,14 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-12 text-center">
             <div className="flex justify-center mb-8">
               <div className="w-24 h-24 bg-gradient-to-br from-[#59CCB1]/10 to-[#59CCB1]/20 rounded-full flex items-center justify-center p-4 shadow-lg">
-                <img
-                  src="/images/floowery-spiral-icon.png"
-                  alt="Floowery"
-                  className="w-full h-full object-contain animate-spin"
-                  style={{ animationDuration: "2s" }}
-                />
+                <LogoComponent className="w-16 h-16" />
               </div>
             </div>
 
-            <div>
+            <div className="mb-12">
               <h1 className="text-3xl md:text-4xl font-bold text-[#160C29] mb-4">Dashboard Coming Soon! 🚀</h1>
               <p className="text-xl text-[#59CCB1] mb-2">Thanks for your interest, @{username}!</p>
               <p className="text-gray-600 mb-8 max-w-lg mx-auto">
@@ -110,7 +139,7 @@ export default function DashboardPage() {
               </p>
             </div>
 
-            <div>
+            <div className="mb-12">
               <h3 className="text-xl font-bold text-[#160C29] mb-6">What's Coming:</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                 {[
@@ -131,8 +160,8 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            <div className="mt-10 pt-8 border-t border-gray-100">
-              <p className="text-gray-600 mb-4">Questions? We'd love to hear from you!</p>
+            <div className="pt-8 border-t border-gray-100">
+              <p className="text-gray-600 mb-6">Questions? We'd love to hear from you!</p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <a
                   href="mailto:support@floowery.com"
@@ -154,24 +183,18 @@ export default function DashboardPage() {
     )
   }
 
+  // Main input state
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
-      <div className="max-w-md mx-auto pt-20 px-4">
+      <div className="max-w-md mx-auto pt-16 md:pt-20 px-4">
         <div className="flex justify-center mb-8">
           <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 bg-white">
-            <div className="relative w-full h-full">
-              <img
-                src="/images/floowery-spiral-icon.png"
-                alt="Floowery"
-                className="w-full h-full object-contain drop-shadow-lg hover:drop-shadow-xl transition-all duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-br from-[#59CCB1]/10 to-transparent rounded-full"></div>
-            </div>
+            <LogoComponent className="w-20 h-20 drop-shadow-lg hover:drop-shadow-xl transition-all duration-300" />
           </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-          <h1 className="text-3xl font-bold text-[#160C29] mb-4">Instagram Analytics Dashboard</h1>
+        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 text-center">
+          <h1 className="text-2xl md:text-3xl font-bold text-[#160C29] mb-4">Instagram Analytics Dashboard</h1>
           <p className="text-[#59CCB1] text-lg mb-8">
             Get detailed insights about your Instagram growth and performance
           </p>
@@ -221,7 +244,7 @@ export default function DashboardPage() {
                 "Personalized growth recommendations",
               ].map((feature, index) => (
                 <div key={index} className="flex items-start">
-                  <div className="w-6 h-6 rounded-full bg-[#59CCB1] flex items-center justify-center mr-3 mt-0.5">
+                  <div className="w-6 h-6 rounded-full bg-[#59CCB1] flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
                     <div className="w-2 h-2 bg-white rounded-full"></div>
                   </div>
                   <span className="text-[#160C29] font-medium">{feature}</span>
