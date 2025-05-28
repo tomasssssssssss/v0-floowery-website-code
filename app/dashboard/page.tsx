@@ -1,36 +1,53 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Instagram, ArrowLeft } from "lucide-react"
 import Image from "next/image"
 
 export default function DashboardPage() {
   const [username, setUsername] = useState("")
-  const [currentView, setCurrentView] = useState("input") // "input", "loading", "results"
+  const [isLoading, setIsLoading] = useState(false)
+  const [showResults, setShowResults] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  const handleAnalyze = () => {
-    if (!username.trim()) return
+  useEffect(() => {
+    setMounted(true)
+    // Ensure page starts at top
+    window.scrollTo(0, 0)
+  }, [])
 
-    setCurrentView("loading")
-
-    setTimeout(() => {
-      setCurrentView("results")
-    }, 2000)
-  }
-
-  const handleBack = () => {
-    setCurrentView("input")
-    setUsername("")
-  }
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && username.trim()) {
-      handleAnalyze()
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (username.trim()) {
+      setIsLoading(true)
+      setTimeout(() => {
+        setIsLoading(false)
+        setShowResults(true)
+      }, 2000)
     }
   }
 
-  // Loading View
-  if (currentView === "loading") {
+  const handleBack = () => {
+    setShowResults(false)
+    setUsername("")
+    setIsLoading(false)
+  }
+
+  // Prevent hydration issues
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
+            <div className="w-12 h-12 bg-[#59CCB1]/20 rounded-full"></div>
+          </div>
+          <p className="text-[#59CCB1]">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
         <div className="text-center">
@@ -43,6 +60,7 @@ export default function DashboardPage() {
                 className="object-contain animate-spin"
                 style={{ animationDuration: "2s" }}
                 priority
+                unoptimized
               />
             </div>
           </div>
@@ -56,8 +74,7 @@ export default function DashboardPage() {
     )
   }
 
-  // Results View
-  if (currentView === "results") {
+  if (showResults) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
         <div className="max-w-2xl mx-auto px-4 py-12">
@@ -81,6 +98,7 @@ export default function DashboardPage() {
                     fill
                     className="object-contain"
                     priority
+                    unoptimized
                   />
                 </div>
               </div>
@@ -138,14 +156,20 @@ export default function DashboardPage() {
     )
   }
 
-  // Input View (Default)
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white">
       <div className="max-w-md mx-auto pt-20 px-4">
         <div className="flex justify-center mb-8">
           <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center p-3 shadow-xl hover:shadow-2xl transition-all duration-300">
             <div className="relative w-full h-full">
-              <Image src="/images/floowery-spiral-icon.png" alt="Floowery" fill className="object-contain" priority />
+              <Image
+                src="/images/floowery-spiral-icon.png"
+                alt="Floowery"
+                fill
+                className="object-contain"
+                priority
+                unoptimized
+              />
             </div>
           </div>
         </div>
@@ -156,7 +180,7 @@ export default function DashboardPage() {
             Get detailed insights about your Instagram growth and performance
           </p>
 
-          <div className="mb-8">
+          <form onSubmit={handleSubmit} className="mb-8">
             <div className="relative mb-6">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Instagram className="w-6 h-6 text-[#59CCB1]" />
@@ -165,24 +189,28 @@ export default function DashboardPage() {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                onKeyPress={handleKeyPress}
                 placeholder="Enter your Instagram username"
                 className="w-full pl-14 pr-4 py-4 border-2 border-[#59CCB1]/20 rounded-xl focus:border-[#59CCB1] focus:outline-none transition-colors text-[#160C29] text-lg"
+                required
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
               />
             </div>
 
             <button
-              onClick={handleAnalyze}
+              type="submit"
               disabled={!username.trim()}
               className={`w-full py-4 rounded-xl font-medium transition-all text-lg ${
                 username.trim()
-                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg active:scale-95 cursor-pointer"
+                  ? "bg-gradient-to-r from-[#160C29] to-[#59CCB1] hover:from-[#2A1845] hover:to-[#4AB89E] text-white hover:scale-105 hover:shadow-lg active:scale-95"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
               Analyze My Account
             </button>
-          </div>
+          </form>
 
           <div className="bg-gradient-to-br from-[#59CCB1]/5 to-[#59CCB1]/10 rounded-xl p-6 text-left">
             <h3 className="text-[#160C29] font-bold mb-4 text-lg">What you'll get:</h3>
