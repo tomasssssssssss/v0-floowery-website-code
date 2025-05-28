@@ -1,6 +1,9 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
+import Image from "next/image"
 
 export default function DashboardPage() {
   const [username, setUsername] = useState("")
@@ -31,7 +34,7 @@ export default function DashboardPage() {
     setUsername("")
   }
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && username.trim()) {
       e.preventDefault()
       handleAnalyze()
@@ -56,10 +59,12 @@ export default function DashboardPage() {
       <div className="min-h-screen bg-gradient-to-br from-[#F0FBF8] to-white flex items-center justify-center">
         <div className="text-center">
           <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 mx-auto shadow-xl animate-pulse">
-            <img
+            <Image
               src="/images/floowery-spiral-icon.png"
               alt="Floowery"
-              className="w-12 h-12 object-contain animate-spin"
+              width={48}
+              height={48}
+              className="object-contain animate-spin"
               style={{ animationDuration: "2s" }}
             />
           </div>
@@ -92,7 +97,14 @@ export default function DashboardPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-12 text-center">
             <div className="flex justify-center mb-8">
               <div className="w-24 h-24 bg-gradient-to-br from-[#59CCB1]/10 to-[#59CCB1]/20 rounded-full flex items-center justify-center p-4 shadow-lg">
-                <img src="/images/floowery-spiral-icon.png" alt="Floowery" className="w-full h-full object-contain" />
+                <Image
+                  src="/images/floowery-spiral-icon.png"
+                  alt="Floowery"
+                  width={48}
+                  height={48}
+                  className="object-contain animate-spin"
+                  style={{ animationDuration: "2s" }}
+                />
               </div>
             </div>
 
@@ -154,10 +166,12 @@ export default function DashboardPage() {
         <div className="flex justify-center mb-8">
           <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110">
             <div className="relative w-full h-full">
-              <img
+              <Image
                 src="/images/floowery-spiral-icon.png"
                 alt="Floowery"
-                className="w-full h-full object-contain drop-shadow-lg hover:drop-shadow-xl transition-all duration-300"
+                width={96}
+                height={96}
+                className="object-contain drop-shadow-lg hover:drop-shadow-xl transition-all duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-br from-[#59CCB1]/10 to-transparent rounded-full"></div>
             </div>

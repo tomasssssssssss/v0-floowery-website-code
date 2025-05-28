@@ -4,13 +4,31 @@ import { useEffect, useState } from "react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import Image from "next/image"
 
+interface DashboardMetrics {
+  username: string
+  start: number
+  current: number
+  growth24h: number
+  growth30d: number
+}
+
+interface ChartData {
+  date: string
+  followers: number
+}
+
 export default function FlooweryDashboard() {
-  const [data, setData] = useState([])
-  const [metrics, setMetrics] = useState(null)
+  const [data, setData] = useState<ChartData[]>([])
+  const [metrics, setMetrics] = useState<DashboardMetrics | null>(null)
 
   useEffect(() => {
     fetch("/api/dashboard-data")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch dashboard data")
+        }
+        return res.json()
+      })
       .then((d) => {
         if (d.logs) {
           setData(
@@ -27,6 +45,10 @@ export default function FlooweryDashboard() {
             growth30d: d.growth30d,
           })
         }
+      })
+      .catch((error) => {
+        console.error("Error fetching dashboard data:", error)
+        // You could set an error state here if needed
       })
   }, [])
 
