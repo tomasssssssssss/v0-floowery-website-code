@@ -9,19 +9,12 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true)
-    // Scroll to top when component mounts
-    if (typeof window !== "undefined") {
-      window.scrollTo(0, 0)
-    }
   }, [])
 
   const handleAnalyze = () => {
     const trimmed = username.trim()
     if (!trimmed) return
-
     setCurrentView("loading")
-
-    // Simulate API call
     setTimeout(() => {
       setCurrentView("results")
     }, 2000)
@@ -168,14 +161,7 @@ export default function DashboardPage() {
       <div className="max-w-md mx-auto pt-16 md:pt-20 px-4">
         <div className="flex justify-center mb-8">
           <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 bg-white">
-            <div className="relative w-full h-full">
-              <img
-                src="/images/floowery-spiral-icon.png"
-                alt="Floowery"
-                className="w-full h-full object-contain drop-shadow-lg hover:drop-shadow-xl transition-all duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-br from-[#59CCB1]/10 to-transparent rounded-full"></div>
-            </div>
+            <img src="/images/floowery-logo-icon.png" alt="Floowery Logo" className="w-20 h-20 object-contain" />
           </div>
         </div>
 

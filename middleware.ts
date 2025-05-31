@@ -17,23 +17,22 @@ export function middleware(request: NextRequest) {
     path === "/terms" ||
     path === "/contact" ||
     path === "/faq" ||
-    path === "/checkout" || // Make sure checkout is public
+    path === "/checkout" ||
     path === "/pricing" ||
-    path.startsWith("/checkout/") // Allow all checkout subpaths
+    path === "/dashboard" || // Make dashboard public for now
+    path.startsWith("/checkout/")
 
   // Check if user is authenticated (this is a simplified example)
   const isAuthenticated = request.cookies.has("auth_token")
 
-  // Redirect logic
-  if (!isPublicPath && !isAuthenticated) {
+  // Redirect logic - but skip dashboard for now
+  if (!isPublicPath && !isAuthenticated && path !== "/dashboard") {
     console.log("Redirecting to login from:", path)
-    // Redirect to login if trying to access protected routes without authentication
     return NextResponse.redirect(new URL("/login", request.url))
   }
 
   if (path === "/login" && isAuthenticated) {
     console.log("Redirecting to dashboard from login")
-    // Redirect to dashboard if already logged in
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
