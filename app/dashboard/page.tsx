@@ -161,7 +161,11 @@ export default function DashboardPage() {
       <div className="max-w-md mx-auto pt-16 md:pt-20 px-4">
         <div className="flex justify-center mb-8">
           <div className="w-28 h-28 rounded-full flex items-center justify-center p-4 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-110 bg-white">
-            <img src="/images/floowery-logo-icon.png" alt="Floowery Logo" className="w-20 h-20 object-contain" />
+            <img
+              src="/images/floowery-logo-icon-green-bg.png"
+              alt="Floowery Logo"
+              className="w-20 h-20 object-contain"
+            />
           </div>
         </div>
 
